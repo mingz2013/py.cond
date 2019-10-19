@@ -3,8 +3,5 @@
   <component name="PreferredVcsStorage">
     <preferredVcsName>ApexVCS</preferredVcsName>
   </component>
-  <component name="ProjectDictionaryState">
-    <dictionary name="zhaojm" />
-  </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 2.7.16 (/usr/local/Cellar/python@2/2.7.16/Frameworks/Python.framework/Versions/2.7/bin/python2.7)" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="PyPy 7.1.1 [Python 2.7.13] (/usr/local/Cellar/pypy/7.1.1/libexec/bin/pypy)" project-jdk-type="Python SDK" />
 </project>
