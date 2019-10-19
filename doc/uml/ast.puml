@@ -1,0 +1,74 @@
+@startuml
+
+
+interface Node {
+execute()
+}
+
+interface Expression{
+execute()
+}
+
+
+class File{
+append_statements(statement)
+execute()
+}
+
+
+class EndNode{
+execute()
+}
+
+
+class Number{
+execute()
+}
+
+class Ident{
+execute()
+}
+
+
+class BinaryOperator{
+}
+
+class Sub{
+}
+
+class Mul{
+}
+
+class Div{
+}
+
+class Assign{
+}
+
+class Print{
+}
+
+class ParamList{
+append_param(param)
+}
+
+Node <|-- Expression
+Node <|-- File
+Node <|-- EndNode
+Node <|-- BinaryOperator
+Node <|-- Print
+Node <|-- ParamList
+
+EndNode <|-- Number
+EndNode <|-- Ident
+
+
+BinaryOperator <|-- Sub
+BinaryOperator <|-- Mul
+BinaryOperator <|-- Div
+BinaryOperator <|-- Assign
+
+
+
+
+@enduml

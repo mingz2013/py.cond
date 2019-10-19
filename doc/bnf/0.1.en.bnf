@@ -1,0 +1,98 @@
+
+// 词法定义
+<digit> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" // 数字
+
+<integer> ::= <digit>{<digit>} // 整数
+
+<tk_plus> ::= "+"
+<tk_minus> ::= "-"
+<tk_star> ::= "*"
+<tk_divide> ::= "/"
+<tk_lparen> ::= "("
+<tk_rparen> ::= ")"
+
+
+<lowercase_letter> ::= "a" | "b" | "c" | "d" | "e" | "f" | "g"
+        | "h" | "i" | "j" | "k" | "l" | "m" | "n"
+        | "o" | "p" | "q" | "r" | "s" | "t"
+        | "u" | "v" | "w"
+        | "x" | "y" | "z"
+
+<uppercase_letter> ::= "A" | "B" | "C" | "D" | "E" | "F" | "G"
+        | "H" | "I" | "J" | "K" | "L" | "M" | "N"
+        | "O" | "P" | "Q" | "R" | "S" | "T"
+        | "U" | "V" | "W"
+        | "X" | "Y" | "Z"
+
+<letter> ::= <lowercase_letter> | <uppercase_letter>
+
+
+<tk_underline> ::= "_"
+
+<non_numeric> ::= <letter> | <tk_underline>
+
+
+<ident> ::= <non_numeric>{<non_numeric>|<digit>}
+
+<tk_assign> ::= "="
+
+
+<kw_print> ::= "print"
+
+<tk_comma> ::= ","
+
+// 语法定义
+
+
+
+// 表达式
+
+// 参数列表
+<param_list> ::= <relational_expression>{<tk_comma><relational_expression>}
+//
+//<函数调用表达式> ::= <标识符><左小括号><参数列表><右小括号>
+
+// 初值表达式
+<primary_expression> ::= <integer>
+                        | <ident>
+                        //                | <函数调用表达式>
+                        |<tk_lparen><relational_expression><tk_rparen>
+
+// 一元表达式
+<unary_expression> ::= <primary_expression>
+
+// 乘除类表达式
+<multiplicative_expression> ::= <unary_expression>{
+                                                <tk_star><unary_expression>
+                                                | <tk_divide><unary_expression>
+                                                }
+
+// 加减类表达式
+<relational_expression> ::= <multiplicative_expression> {
+                                                    <tk_plus><multiplicative_expression>
+                                                    | <tk_minus><multiplicative_expression>
+                                                    }
+
+// 赋值表达式
+<assignment_expression> ::= <ident><tk_assign><relational_expression>
+
+
+
+// 表达式
+<expression> ::= <assignment_expression>
+//            | <函数调用表达式>
+
+
+// 语句
+
+// print语句
+<print_statement> ::= <kw_print><tk_lparen><param_list><tk_rparen>
+
+// 语句
+<statement> ::=     <expression>
+                    |<print_statement>
+
+
+// 文件
+
+<file> ::= {<statement>}
