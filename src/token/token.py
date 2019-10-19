@@ -22,7 +22,7 @@ SUB = "SUB"  # -
 MUL = "MUL"  # *
 DIV = "DIV"  # /
 
-# REM = "REM"  # %
+REM = "REM"  # %
 #
 # AND = "AND"  # &
 # OR = "OR"  # |
@@ -36,22 +36,22 @@ DIV = "DIV"  # /
 # INC = "INC"  # ++
 # DEC = "DEC"  # --
 #
-# EQL = "EQL"  # ==
-# LSS = "LSS"  # <
-# GTR = "GTR"  # >
+EQL = "EQL"  # ==
+LSS = "LSS"  # <
+GTR = "GTR"  # >
 ASSIGN = "ASSIGN"  # =
 # NOT = "NOT"  # !
 #
-# NEQ = "NEQ"  # !=
-# LEQ = "LEQ"  # <=
-# GEQ = "GEQ"  # >=
+NEQ = "NEQ"  # !=
+LEQ = "LEQ"  # <=
+GEQ = "GEQ"  # >=
 #
 LPAREN = "LPAREN"  # (
-# LBRACK = "LBRACK"  # [
+LBRACK = "LBRACK"  # [
 # LBRACE = "LBRACE"  # {
 #
 RPAREN = "RPAREN"  # )
-# RBRACK = "RBRACK"  # ]
+RBRACK = "RBRACK"  # ]
 # RBRACE = "RBRACE"  # }
 
 

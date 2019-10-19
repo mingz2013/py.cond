@@ -15,6 +15,9 @@ from token import token
 
 
 class Parser(object):
+    """
+    Parser
+    """
     def __init__(self, filename, src):
         self.file = token.File(filename)
 
@@ -39,23 +42,25 @@ class Parser(object):
         #     pass
 
     def error(self, *args):
+        """error"""
         print("error....", self.pos, self.tok, self.lit, args)
         exit(1)
 
     def parse_file(self):
+        """parse_file"""
 
-        file = ast.File()
+        file_node = ast.File()
 
         while self.tok != token.EOF:
             node = self.statement()
-            file.append_statements(node)
+            file_node.append_statements(node)
 
         if self.tok != token.EOF:
             self.error("bad end...")  # 解析完一个完整的表达式后，没有结束
 
-        print("File", file)
+        print("File", file_node)
 
-        return file
+        return file_node
 
     def statement(self):
         """语句"""

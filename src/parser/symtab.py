@@ -9,10 +9,10 @@ __author__ = "zhaojm"
 class Var(object):
     """变量"""
 
-    def __init__(self, name, scopePath, initData):
-        self.scopePath = scopePath  # 作用域路径
+    def __init__(self, name, scope_path, init_data):
+        self.scope_path = scope_path  # 作用域路径
         self.name = name  # 变量名称
-        self.initData = initData  # 初值数据
+        self.init_data = init_data  # 初值数据
         # self.inited = False  # 是否初始化
         # self.offset = 0  # 变量的栈帧偏移
 
@@ -33,73 +33,110 @@ class Var(object):
         #     else:
         #         print("var error...")
 
+    def __str__(self):
+        return str(self.__class__.__name__ + "(" + str(self.scope_path) + str(self.name) + str(self.init_data) + ")")
+
+    def __repr__(self):
+        return repr(
+            self.__class__.__name__ + "(" + repr(self.scope_path) + repr(self.name) + repr(self.init_data) + ")")
+
 
 class SymTab(object):
     """符号表管理"""
 
     def __init__(self):
-        self.varTab = {}  # 变量表
-        self.curFunc = None  # 当前分析的函数
-        self.scopeId = 0  # 当前作用域编号
-        self.scopePath = []  # 作用域路径
-        pass
+        self.var_tab = {}  # 变量表
+        self.cur_func = None  # 当前分析的函数
+        self.scope_id = 0  # 当前作用域编号
+        self.scope_path = []  # 作用域路径
+
+    def __str__(self):
+        return str({
+            "name": self.__class__.__name__,
+            "var_tab": self.var_tab,
+            "cur_func": self.cur_func,
+            "scope_id": self.scope_id,
+            "scope_path": self.scope_path
+        })
+
+    def __repr__(self):
+        return repr({
+            "name": self.__class__.__name__,
+            "var_tab": self.var_tab,
+            "cur_func": self.cur_func,
+            "scope_id": self.scope_id,
+            "scope_path": self.scope_path
+        })
 
     def enter(self):
         """作用域管理，进入作用域"""
         print("enter...")
-        self.scopeId += 1
-        self.scopePath.append(self.scopeId)
+        self.scope_id += 1
+        self.scope_path.append(self.scope_id)
+
+        return self
 
     def leave(self):
         """离开作用域"""
         print("leave...")
-        # TODO, 回收变量
+        # , 回收变量
+        path_len = len(self.scope_path)
+        for name, vlist in self.var_tab.items():
+            rmlist = []
+            for v in vlist:
+                l = len(v.scope_path)
+                if l == path_len and v.scope_path[-1] == self.scope_path[-1]:
+                    rmlist.append(v)
+            for rmv in rmlist:
+                vlist.remove(rmv)
 
-        self.scopePath.pop()
+        self.scope_path.pop()
 
-    def addVar(self, name, initData):
+        return self
+
+    def add_var(self, name, init_data):
         """保存变量对象"""
-        print("addVar...", name, initData)
+        print("add_var...", name, init_data)
 
-        var = Var(name, self.scopePath[:], initData)
+        var = Var(name, self.scope_path[:], init_data)
 
-        if var.name not in self.varTab:
+        if var.name not in self.var_tab:
             # 如果变量名称不在变量列表里，先创建对应的列表
-            self.varTab[var.name] = []
+            self.var_tab[var.name] = []
 
         if var.name[0] == '<':
             # 常量，直接添加进去
             # 添加进去
-            self.varTab[var.name].append(var)
+            self.var_tab[var.name].append(var)
         else:
             # 非常量，判断作用域，如果相同作用域内已存在，直接替换，如果不存在add进去
-            vlist = self.varTab[var.name]
+            vlist = self.var_tab[var.name]
 
             for v in vlist:
-                if v.scopePath[-1] == var.scopePath[-1]:
+                if v.scope_path[-1] == var.scope_path[-1]:
                     # 存在同作用域同名变量，直接替换
                     vlist.remove(v)
                     break
 
             vlist.append(var)
 
-        pass
+        return self
 
-    def getVar(self, name):
+    def get_var(self, name):
         """获取变量对象"""
-        print("getVar...", name)
+        print("get_var...", name)
         # 匹配name，匹配最长当前路径scopePath
 
         select = None
 
-        if name in self.varTab:
-            vlist = self.varTab[name]
-            path_len = len(self.scopePath)
+        if name in self.var_tab:
+            vlist = self.var_tab[name]
+            path_len = len(self.scope_path)
             max_len = 0
             for v in vlist:
-                l = len(v.scopePath)
+                l = len(v.scope_path)
                 # print("getvar...", v.scopePath, self.scopePath)
-                if l <= path_len and v.scopePath[l - 1] == self.scopePath[l - 1]:
+                if l <= path_len and v.scope_path[l - 1] == self.scope_path[l - 1]:
                     if l > max_len:
                         max_len = l
                         select = v
@@ -109,3 +146,30 @@ class SymTab(object):
             exit(1)
 
         return select
+
+
+if __name__ == "__main__":
+    s = SymTab()
+    print(s)
+    s.add_var('a', 'a')
+    print(s)
+    s.add_var('b', 'b')
+    print(s)
+    s.enter()
+    print(s)
+    s.add_var('c', 'c')
+    print(s)
+    s.add_var('d', 'd')
+    print(s)
+    s.enter()
+    print(s)
+    s.add_var('e', 'e')
+    print(s)
+    s.add_var('f', 'f')
+    print(s)
+    s.leave()
+    print(s)
+    s.add_var('g', 'g')
+    print(s)
+    s.add_var('h', 'h')
+    print(s)

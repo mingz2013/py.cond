@@ -14,16 +14,22 @@ from token import token
 
 
 def is_letter(ch):
+    """is letter"""
     return 'a' <= ch <= 'z' or 'A' <= ch <= 'Z' or ch == '_'
 
 
 def is_digit(ch):
+    """is digit"""
     return '0' <= ch <= '9'
 
 
 class Scanner(object):
-    def __init__(self, file, src):
-        self.file = file
+    """
+    Scanner
+    """
+
+    def __init__(self, nfile, src):
+        self.file = nfile
         self.src = src
 
         self.ch = ' '
@@ -35,6 +41,7 @@ class Scanner(object):
         self.next_ch()
 
     def next_ch(self):
+        """next char"""
         # print("next_ch", self.offset, self.ch)
         self.offset += 1
 
@@ -67,6 +74,7 @@ class Scanner(object):
         return self.src[offs:self.offset]
 
     def scan_number(self):
+        """scan number"""
         offs = self.offset
         # self.next_ch()
         while is_digit(self.ch):
@@ -75,6 +83,7 @@ class Scanner(object):
         return self.src[offs: self.offset]
 
     def scan(self):
+        """scan"""
         self.skip_white_space()  # 跳过空白字符
         pos = self.offset
         ch = self.ch
@@ -114,6 +123,7 @@ class Scanner(object):
         return pos, tok, lit
 
     def error(self, *args):
+        """error"""
         print("error....", args)
         exit(1)
 

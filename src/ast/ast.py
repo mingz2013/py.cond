@@ -43,9 +43,11 @@ class File(Node):
         })
 
     def append_statements(self, statement):
+        """append statements"""
         self.statements.append(statement)
 
     def execute(self):
+        """execute"""
         env.Symtab.enter()  # 进入0级作用域
 
         for statement in self.statements:
@@ -106,9 +108,10 @@ class Ident(EndNode):
     #     self.expression = node
 
     def execute(self):
+        """execute"""
         # return self.expression.execute()
         # 从环境变量，符号表管理里面，获取当前标识符所对应的值
-        return env.Symtab.getVar(self.lit).initData
+        return env.Symtab.get_var(self.lit).initData
 
 
 class BinaryOperator(Node):
@@ -171,7 +174,8 @@ class Assign(BinaryOperator):
     """赋值="""
 
     def execute(self):
-        env.Symtab.addVar(self.left.lit, self.right.execute())
+        """execute"""
+        env.Symtab.add_var(self.left.lit, self.right.execute())
         return None
 
 
@@ -196,6 +200,7 @@ class Print(Node):
         })
 
     def execute(self):
+        """execute"""
         print(">>>", self.param_list_node.execute())
         return None
 
@@ -207,6 +212,7 @@ class ParamList(Node):
         self.param_list = []
 
     def append_param(self, param):
+        """execute"""
         self.param_list.append(param)
 
     def __str__(self):
@@ -224,4 +230,5 @@ class ParamList(Node):
         })
 
     def execute(self):
+        """execute"""
         return [param.execute() for param in self.param_list]
