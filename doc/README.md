@@ -76,6 +76,17 @@ src->词法分析器，生成token流 -> 语法分析，生成AST -> AST执行 -
 <None关键字> ::= "None"
 ```
 
+```bnf
+<kw_or> ::= "or"
+<kw_and> ::= "and"
+<kw_not> ::= "not"
+<kw_in> ::= "in"
+<kw_is> ::= "is"
+<kw_false> ::= "False"
+<kw_true> ::= "True"
+<kw_none> ::= "None"
+```
+
 
 ### 标识符
 ```bnf
@@ -99,12 +110,35 @@ src->词法分析器，生成token流 -> 语法分析，生成AST -> AST执行 -
         | "X" | "Y" | "Z"
 ```
 
+```bnf
+<identifier> ::= <non_numeric>{<digit>|<non_numeric>}
+<digit> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+<non_numeric> ::= <tk_underline>|<letter>
+<tk_underline> ::= "_"
+<letter> ::= <lowercase_letter>|<uppercase_letter>
+<lowercase_letter> ::= "a" | "b" | "c" | "d" | "e" | "f" | "g"
+        | "h" | "i" | "j" | "k" | "l" | "m" | "n"
+        | "o" | "p" | "q" | "r" | "s" | "t"
+        | "u" | "v" | "w"
+        | "x" | "y" | "z"
+<uppercase_letter> ::= "A" | "B" | "C" | "D" | "E" | "F" | "G"
+        | "H" | "I" | "J" | "K" | "L" | "M" | "N"
+        | "O" | "P" | "Q" | "R" | "S" | "T"
+        | "U" | "V" | "W"
+        | "X" | "Y" | "Z"
+
+```
+
 
 ### 字面值
 
 ```bnf
 <字面值> ::= <数字字面值>
             |<字符串字面值>
+```
+
+```bnf
+<literal> ::= <digit_literal>|<string_literal>
 ```
 
 #### 数字字面值的定义
@@ -119,7 +153,13 @@ src->词法分析器，生成token流 -> 语法分析，生成AST -> AST执行 -
 <数字> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
 <点号> ::= "."
 ```
-
+```bnf
+<digit_literal> ::= <integer>|<floatnumber>
+<integer> ::= <digit>{<digit>}
+<floatnumber> ::= <integer><tk_period><integer>
+<digit> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+<tk_period> ::= "."
+```
 
 
 #### 字符串字面值的定义
@@ -148,6 +188,23 @@ src->词法分析器，生成token流 -> 语法分析，生成AST -> AST执行 -
 
 ```
 
+```bnf
+<string_literal> ::= <tk_double_quotation_mark>{<characters_in_string>}<tk_double_quotation_mark>
+<tk_double_quotation_mark> ::= "\""
+<characters_in_string> ::= <escape_character>| "除双引号字符\",反斜线字符\\或换行符外的任何字符"
+<escape_character> ::= "\'"
+             |"\""
+             |"\a"
+             |"\b"
+             |"\f"
+             |"\n"
+             |"\r"
+             |"\t"
+             |"\v"
+             |"\0"
+             |"\\"
+```
+
 
 ### 运算符
 
@@ -164,8 +221,22 @@ src->词法分析器，生成token流 -> 语法分析，生成AST -> AST执行 -
 <小于等于号> ::= "<="
 <大于号> ::= ">"
 <大于等于号> ::= ">="
+```
 
 
+```bnf
+<tk_plus> ::= "+"
+<tk_minus_sign> ::= "-"
+<tk_star> ::= "*"
+<tk_divide> ::= "/"
+<tk_percent> ::= "%"
+
+<tk_equal> ::= "=="
+<tk_not_equal> ::= "!="
+<tk_less_than> ::= "<"
+<tk_less_than_or_equal> ::= "<="
+<tk_greater_than> ::= ">"
+<tk_greater_than_or_equal> ::= ">="
 ```
 
 ### 分隔符
@@ -181,7 +252,19 @@ src->词法分析器，生成token流 -> 语法分析，生成AST -> AST执行 -
 <单引号> ::= "'"
 <双引号> ::= "\""
 ```
+```bnf
+<tk_assign> ::= "="
+<tk_period> ::= "."
+<tk_left_parenthesis> ::= "("
+<tk_right_parenthesis> ::= ")"
+<tk_left_middle_bracket> ::= "["
+<tk_right_middle_bracket> ::= "]"
+<tk_semicolon> ::= ";"
+<tk_comma> ::= ","
+<tk_quotation_mark> ::= "'"
+<tk_double_quotation_mark> ::= "\""
 
+```
 
 
 ## 表达式
@@ -196,21 +279,33 @@ src->词法分析器，生成token流 -> 语法分析，生成AST -> AST执行 -
 
 ```
 
+```bnf
+<list_display> ::= <tk_left_middle_bracket>[<expression_list>]<tk_right_middle_bracket>
+```
+
 ### 表达式列表
 ```bnf
 
 <表达式列表> ::= <表达式>{<逗号><表达式>}[<逗号>]
 
 ```
+```bnf
+<expression_list> ::= <expression>{<tk_comma><expression>}[<tk_comma>]
+```
 
 ### 调用
 ```bnf
 <调用> ::= <标识符><左小括号>[<表达式列表>]<右小括号>
 ```
-
+```bnf
+<call> ::= <identifier><tk_left_parenthesis>[<expression_list>]<tk_right_parenthesis>
+```
 
 
 ### 原子
+
+原子代表 一个基本单元
+
 ```bnf
 <原子> ::= <标识符> 
             | <字面值> 
@@ -219,22 +314,36 @@ src->词法分析器，生成token流 -> 语法分析，生成AST -> AST执行 -
             | 调用
 ```
 
+```bnf
+<atom> ::= <identifier>
+            | <literal>
+            | <list_display>
+            | <tk_left_parenthesis><boolean_expression><tk_right_parenthesis>
+            | <call>
+```
+
 ### 表达式
 ```bnf
 <表达式> ::= <布尔运算表达式>
 ```
-
+```bnf
+<expression> ::= <boolean_expression>
+```
 
 ### 一元运算符
 
-负数
+负数，正数
 
 ```bnf
 <一元运算表达式> ::= <原子> 
                     | <减号><一元运算表达式>
                     | <加号><一元运算表达式>
 ```
-
+```bnf
+<unary_expression> ::= <atom>
+                    | <tk_minus_sign><unary_expression>
+                    | <tk_plus><unary_expression>
+```
 ### 二元运算符
 
 乘除类，加减类
@@ -247,6 +356,16 @@ src->词法分析器，生成token流 -> 语法分析，生成AST -> AST执行 -
                     | <加减类运算表达式><加号><乘除类运算表达式>
                     | <加减类运算表达式><减号><乘除类运算表达式>
 <二元运算表达式> ::= <加减类运算表达式>
+```
+
+```bnf
+<multiplicative_expression> ::= <unary_expression>
+                    | <multiplicative_expression><tk_star><unary_expression>
+                    | <multiplicative_expression><tk_divide><unary_expression>
+<relational_expression> ::= <multiplicative_expression>
+                    | <relational_expression><tk_plus><multiplicative_expression>
+                    | <relational_expression><tk_minus_sign><multiplicative_expression>
+<binary_operation_expression> ::= <relational_expression>
 ```
 
 ### 比较运算
@@ -273,17 +392,45 @@ src->词法分析器，生成token流 -> 语法分析，生成AST -> AST执行 -
 
 ```
 
+```bnf
+<comparison_expression> ::= <binary_operation_expression>{<comparison_expression><binary_operation_expression>}
+<comparison_operator> ::= <tk_equal>
+                            | <tk_not_equal>
+                            | <tk_less_than>
+                            | <tk_less_than_or_equal>
+                            | <tk_greater_than>
+                            | <tk_greater_than_or_equal>
+                            | <kw_is> [<kw_not>]
+                            | [<kw_not>] <kw_in> 
+<tk_equal> ::= "=="
+<tk_not_equal> ::= "!="
+<tk_less_than> ::= "<"
+<tk_less_than_or_equal> ::= "<="
+<tk_greater_than> ::= ">"
+<tk_greater_than_or_equal> ::= ">="
+```
+
+
 ### 布尔运算
 ```bnf
 <or运算表达式> ::= <and运算表达式> 
                 | <or运算表达式> <or关键字> <and运算表达式>
 <and运算表达式> ::= <not运算表达式> 
-                | <and运算表达式> <and> <not运算表达式>
+                | <and运算表达式> <and关键字> <not运算表达式>
 <not运算表达式> ::= <比较运算表达式> 
                 | <not关键字> <not运算表达式>
 <布尔运算表达式> ::= <or运算表达式>
 ```
 
+```bnf
+<or_operation_expression> ::= <and_operation_expression>
+                            | <or_operation_expression> <kw_or> <and_operation_expression>
+<and_operation_expression> ::= <not_operation_expression>
+                            | <and_operation_expression><kw_and><not_operation_expression>
+<not_operation_expression> ::= <comparison_expression>
+                            | <kw_not> <not_operation_expression>
+<boolean_expression> ::= <or_operation_expression>
+```
 
 
 
@@ -298,9 +445,17 @@ src->词法分析器，生成token流 -> 语法分析，生成AST -> AST执行 -
                 |<赋值语句>
 ```
 
+```bnf
+<simple_statement> ::= <expression_statement>
+                    | <assignment_statement>
+```
+
 ### 表达式语句
 ```bnf
 <表达式语句> ::= <表达式>
+```
+```bnf
+<expression_statement> ::= <expression>
 ```
 
 ### 赋值语句
@@ -309,6 +464,9 @@ src->词法分析器，生成token流 -> 语法分析，生成AST -> AST执行 -
 
 ```bnf
 <赋值语句> ::= <标识符> <赋值等号> <表达式>
+```
+```bnf
+<assignment_statement> ::= <identifier><tk_assign><expression>
 ```
 
 
@@ -320,11 +478,17 @@ src->词法分析器，生成token流 -> 语法分析，生成AST -> AST执行 -
 <复合语句> ::= <简单语句> {<分号><简单语句>}[<分号>]
 ```
 
-
+```bnf
+<compound_statement> ::= <simple_statement>{<tk_semicolon><simple_statement>}[<tk_semicolon>]
+```
 ## 最高层级组件
 
 ```bnf
 <文件> ::= {<复合语句>}
+```
+
+```bnf
+<file> ::= {<compound_statement>}
 ```
 
 
@@ -336,6 +500,6 @@ src->词法分析器，生成token流 -> 语法分析，生成AST -> AST执行 -
 - https://docs.python.org/zh-cn/3/reference/simple_stmts.html
 - https://docs.python.org/zh-cn/3/reference/compound_stmts.html
 - https://docs.python.org/zh-cn/3/reference/toplevel_components.html
-
+- https://golang.google.cn/ref/spec
 ## books
 - 《自己动手写编译器、链接器》
