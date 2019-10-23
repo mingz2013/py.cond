@@ -272,6 +272,18 @@ src->词法分析器，生成token流 -> 语法分析，生成AST -> AST执行 -
 
 ## 表达式
 
+### 表达式列表
+用于列表的中间状态，也用于函数调用的参数列表
+```bnf
+
+<表达式列表> ::= <表达式>{<逗号><表达式>}[<逗号>]
+
+```
+```bnf
+<expression_list> ::= <expression>{<tk_comma><expression>}[<tk_comma>]
+```
+
+
 ### 列表的显示
 
 参考python的列表
@@ -286,16 +298,6 @@ src->词法分析器，生成token流 -> 语法分析，生成AST -> AST执行 -
 <list_display> ::= <tk_left_middle_bracket>[<expression_list>]<tk_right_middle_bracket>
 ```
 
-### 表达式列表
-用于列表的中间状态，也用于函数调用的参数列表
-```bnf
-
-<表达式列表> ::= <表达式>{<逗号><表达式>}[<逗号>]
-
-```
-```bnf
-<expression_list> ::= <expression>{<tk_comma><expression>}[<tk_comma>]
-```
 
 ### 调用
 ```bnf
@@ -326,13 +328,6 @@ src->词法分析器，生成token流 -> 语法分析，生成AST -> AST执行 -
             | <call>
 ```
 
-### 表达式
-```bnf
-<表达式> ::= <布尔运算表达式>
-```
-```bnf
-<expression> ::= <boolean_expression>
-```
 
 ### 一元运算符
 
@@ -374,7 +369,7 @@ src->词法分析器，生成token流 -> 语法分析，生成AST -> AST执行 -
 
 ### 比较运算
 
-这里参考python的比较运算
+这里参考python的比较运算, eg: a < b < c
 
 
 ```bnf
@@ -436,6 +431,13 @@ src->词法分析器，生成token流 -> 语法分析，生成AST -> AST执行 -
 <boolean_expression> ::= <or_operation_expression>
 ```
 
+### 表达式
+```bnf
+<表达式> ::= <布尔运算表达式>
+```
+```bnf
+<expression> ::= <boolean_expression>
+```
 
 
 
@@ -494,6 +496,13 @@ src->词法分析器，生成token流 -> 语法分析，生成AST -> AST执行 -
 ```bnf
 <file> ::= {<compound_statement>}
 ```
+
+
+
+
+# 运算优先级
+参考 https://docs.python.org/zh-cn/3/reference/expressions.html#evaluation-order
+
 
 
 # 参考
