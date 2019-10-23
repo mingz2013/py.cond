@@ -500,10 +500,20 @@ src->词法分析器，生成token流 -> 语法分析，生成AST -> AST执行 -
 
 
 
-# 运算优先级
+## 运算优先级
 参考 https://docs.python.org/zh-cn/3/reference/expressions.html#evaluation-order
 
 
+## 内置函数
+- print()  用于打印输出
+- time() 用于标记字符串是时间格式，应当解析成时间，eg: time("2019-10-10 10:00:00")
+
+
+
+## 引用业务逻辑内数据说明
+执行脚本前，
+- env可以初始化一些全局的配置，用作当前环境
+- env可以绑定一些全局变量，用于引用业务逻辑上的数据
 
 # 参考
 ## sites
