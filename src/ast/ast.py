@@ -111,7 +111,7 @@ class Ident(EndNode):
         """execute"""
         # return self.expression.execute()
         # 从环境变量，符号表管理里面，获取当前标识符所对应的值
-        return env.Symtab.get_var(self.lit).initData
+        return env.Symtab.get_var(self.lit).init_data
 
 
 class BinaryOperator(Node):
