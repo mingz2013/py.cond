@@ -7,6 +7,18 @@ token定义
 __date__ = "14/12/2017"
 __author__ = "zhaojm"
 
+kw_or = "kw_or"  # or
+kw_and = "kw_and"  # and
+kw_not = "kw_not"  # not
+kw_in = "kw_in"  # in
+kw_is = "kw_is"  # is
+kw_false = "kw_false"  # False
+kw_true = "kw_true"  # True
+kw_none = "kw_none"  # None
+
+
+
+
 KW_PRINT = "print"
 
 ERROR = "ERROR"
