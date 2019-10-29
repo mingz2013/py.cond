@@ -232,7 +232,7 @@ src->词法分析器，生成token流 -> 语法分析，生成AST -> AST执行 -
 <tk_minus_sign> ::= "-"
 <tk_star> ::= "*"
 <tk_divide> ::= "/"
-<tk_percent> ::= "%"
+<tk_remainder> ::= "%"
 
 <tk_equal> ::= "=="
 <tk_not_equal> ::= "!="

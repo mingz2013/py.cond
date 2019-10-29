@@ -23,6 +23,19 @@ def is_digit(ch):
     return '0' <= ch <= '9'
 
 
+kw_map = {
+    'or': token.kw_or,
+    'and': token.kw_and,
+    'not': token.kw_not,
+    'in': token.kw_in,
+    'is': token.kw_is,
+    'False': token.kw_false,
+    'True': token.kw_true,
+    'None': token.kw_none,
+}
+
+
+
 class Scanner(object):
     """
     Scanner
@@ -76,11 +89,19 @@ class Scanner(object):
     def scan_number(self):
         """scan number"""
         offs = self.offset
-        # self.next_ch()
+
         while is_digit(self.ch):
             self.next_ch()
-        # self.next_ch()
-        return self.src[offs: self.offset]
+
+        tok = token.tk_integer
+
+        if self.ch == '.':
+            self.next_ch()
+            while is_digit(self.ch):
+                self.next_ch()
+            tok = token.tk_floatnumber
+
+        return tok, self.src[offs: self.offset]
 
     def scan(self):
         """scan"""
@@ -89,37 +110,98 @@ class Scanner(object):
         ch = self.ch
 
         if is_letter(ch):  # 如果是字母
-            tok = token.IDENT
-            lit = self.scan_identifier()
+
+            lit = self.scan_identifier()  # 标识符
+            # 关键字
+            tok = kw_map.get(lit, token.tk_identifier)
+
         elif is_digit(ch):  # 如果是数字
-            tok = token.NUMBER
-            lit = self.scan_number()
+
+            # tok = token.NUMBER
+            tok, lit = self.scan_number()
+
+
         else:  # 不是字母也不是数字
+
             lit = ch
             self.next_ch()
             if ch == -1:
                 tok = token.EOF
+
             elif ch == '+':
-                tok = token.ADD
+                tok = token.tk_plus
             elif ch == '-':
-                tok = token.SUB
+                tok = token.tk_minus_sign
             elif ch == '*':
-                tok = token.MUL
+                tok = token.tk_star
             elif ch == '/':
-                tok = token.DIV
-            elif ch == '(':
-                tok = token.LPAREN
-            elif ch == ')':
-                tok = token.RPAREN
+                tok = token.tk_divide
+            elif ch == '%':
+                tok = token.tk_remainder
+
+            elif ch == '!':
+                if self.ch != '=':
+                    self.error(self.ch, self.offset, lit)
+                self.next_ch()
+                tok = token.tk_not_equal
+                lit = self.src[pos: self.offset]
+
+
+            elif ch == '<':
+                tok = token.tk_less_than
+
+                if self.ch == '=':
+                    self.next_ch()
+                    tok = token.tk_less_than_or_equal
+                    lit = self.src[pos: self.offset]
+
+
+            elif ch == '>':
+                tok = token.tk_greater_than
+
+                if self.ch == '=':
+                    self.next_ch()
+                    tok = token.tk_greater_than_or_equal
+                    lit = self.src[pos: self.offset]
+
+
+
             elif ch == '=':
-                tok = token.ASSIGN
+                tok = token.tk_assign
+
+                if self.ch == '=':
+                    self.next_ch()
+                    tok = token.tk_equal
+                    # print(pos, self.offset)
+                    lit = self.src[pos: self.offset]
+
+
+
+            elif ch == '.':
+                tok = token.tk_period
+
+            elif ch == '(':
+                tok = token.tk_left_parenthesis
+            elif ch == ')':
+                tok = token.tk_right_parenthesis
+            elif ch == '[':
+                tok = token.tk_left_middle_bracket
+            elif ch == ']':
+                tok = token.tk_right_middle_bracket
+            elif ch == ';':
+                tok = token.tk_semicolon
             elif ch == ',':
-                tok = token.COMMA
+                tok = token.tk_comma
+            elif ch == '\'':
+                tok = token.tk_quotation_mark
+            elif ch == '"':
+                tok = token.tk_double_quotation_mark
             else:
                 tok = token.ERROR
                 self.error("Unknown lit", lit)
                 exit(1)
 
+        print(pos, tok, lit)
         return pos, tok, lit
 
     def error(self, *args):
@@ -129,4 +211,44 @@ class Scanner(object):
 
 
 if __name__ == "__main__":
+    src = '''
+    
+    a = 1 + 10 - 5
+
+b = (a + 1) * 2 / 3
+
+
+a = 100 % 1
+
+print(1, 2, 3, a, b + a)
+
+
+abc = 11.11
+cbd = 12
+
+
+;'"=
+
+[1, 2, 3]
+
+
+1 == 1;
+
+1 <= 1;
+
+1 >= 1;
+
+1 != 1;
+
+1 > 1;
+1 < 1;
+
+    
+    
+    '''
+    s = Scanner(None, src)
+    while True:
+        pos, tok, lit = s.scan()
+        if lit == -1:
+            break
     pass
