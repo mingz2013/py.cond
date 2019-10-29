@@ -236,7 +236,7 @@ class Scanner(object):
 
 
 if __name__ == "__main__":
-    src = '''
+    src = u'''
     
     a = 1 + 10 - 5
 
@@ -273,7 +273,7 @@ cbd = 12
     
     '''
 
-    src = '''
+    src = u'''
     
     ""
     
@@ -290,9 +290,10 @@ cbd = 12
 
     with codecs.open('1.calc', encoding='utf-8') as f:
         src = f.read()
-        s = Scanner(None, src)
-        while True:
-            pos, tok, lit = s.scan()
-            if lit == -1:
-                break
-        pass
+
+    s = Scanner(None, src)
+    while True:
+        pos, tok, lit = s.scan()
+        if lit == -1:
+            break
+    pass
