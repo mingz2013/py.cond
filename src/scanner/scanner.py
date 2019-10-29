@@ -55,7 +55,7 @@ class Scanner(object):
 
     def next_ch(self):
         """next char"""
-        # print("next_ch", self.offset, self.ch)
+        print("next_ch", self.offset, self.ch)
         self.offset += 1
 
         if self.offset < len(self.src):
@@ -103,6 +103,29 @@ class Scanner(object):
 
         return tok, self.src[offs: self.offset]
 
+    def scan_string(self):
+        """scan string"""
+        offs = self.offset
+
+        self.next_ch()
+
+        while self.ch != '"':
+            if self.ch == '\\':
+                self.next_ch()
+                if self.ch not in ['"', 'a', 'b', 'f', 'n', 'r', 't', 'v', '0', '\\']:
+                    self.error(self.ch, self.offset)
+                else:
+                    self.next_ch()
+            elif self.ch == '\n':  # 字符串不能换行
+                self.error(self.ch, self.offset)
+            else:
+                self.next_ch()
+                # self.next_ch()
+
+        self.next_ch()
+
+        return self.src[offs:self.offset]
+
     def scan(self):
         """scan"""
         self.skip_white_space()  # 跳过空白字符
@@ -120,6 +143,9 @@ class Scanner(object):
             # tok = token.NUMBER
             tok, lit = self.scan_number()
 
+        elif ch == '"':
+            tok = token.tk_string
+            lit = self.scan_string()
 
         else:  # 不是字母也不是数字
 
@@ -172,13 +198,12 @@ class Scanner(object):
                 if self.ch == '=':
                     self.next_ch()
                     tok = token.tk_equal
-                    # print(pos, self.offset)
                     lit = self.src[pos: self.offset]
 
 
 
-            elif ch == '.':
-                tok = token.tk_period
+            # elif ch == '.':
+            #     tok = token.tk_period
 
             elif ch == '(':
                 tok = token.tk_left_parenthesis
@@ -192,10 +217,10 @@ class Scanner(object):
                 tok = token.tk_semicolon
             elif ch == ',':
                 tok = token.tk_comma
-            elif ch == '\'':
-                tok = token.tk_quotation_mark
-            elif ch == '"':
-                tok = token.tk_double_quotation_mark
+            # elif ch == '\'':
+            #     tok = token.tk_quotation_mark
+            # elif ch == '"':
+            #     tok = token.tk_double_quotation_mark
             else:
                 tok = token.ERROR
                 self.error("Unknown lit", lit)
@@ -226,8 +251,9 @@ print(1, 2, 3, a, b + a)
 abc = 11.11
 cbd = 12
 
+""
 
-;'"=
+; "="
 
 [1, 2, 3]
 
@@ -246,9 +272,27 @@ cbd = 12
     
     
     '''
-    s = Scanner(None, src)
-    while True:
-        pos, tok, lit = s.scan()
-        if lit == -1:
-            break
-    pass
+
+    src = '''
+    
+    ""
+    
+    "123.123"
+    
+    "123\n\\123';\"'k'"
+    
+    "
+    "
+    
+    '''
+
+    import codecs
+
+    with codecs.open('1.calc', encoding='utf-8') as f:
+        src = f.read()
+        s = Scanner(None, src)
+        while True:
+            pos, tok, lit = s.scan()
+            if lit == -1:
+                break
+        pass
