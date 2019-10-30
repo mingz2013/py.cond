@@ -442,7 +442,7 @@ src->词法分析器，生成token流 -> 语法分析，生成AST -> AST执行 -
 
 
 
-## 简单语句
+### 简单语句
 简单语句由一个单独的逻辑构成，多条简单语句可以存在于同一行内并以分号分割。
 
 
@@ -477,7 +477,7 @@ src->词法分析器，生成token流 -> 语法分析，生成AST -> AST执行 -
 
 
 
-## 复合语句
+### 复合语句
 一行里面可以有多条语句
 最后的分号可有可无
 ```bnf
@@ -487,14 +487,28 @@ src->词法分析器，生成token流 -> 语法分析，生成AST -> AST执行 -
 ```bnf
 <compound_statement> ::= <simple_statement>{<tk_semicolon><simple_statement>}[<tk_semicolon>]
 ```
-## 最高层级组件
+
+
+
+### 语句
 
 ```bnf
-<文件> ::= {<复合语句>}
+<语句> ::= <复合语句>
 ```
 
 ```bnf
-<file> ::= {<compound_statement>}
+<statement> ::= <compound_statement>
+```
+
+
+## 最高层级组件
+
+```bnf
+<文件> ::= {<语句>}
+```
+
+```bnf
+<file> ::= {<statement>}
 ```
 
 

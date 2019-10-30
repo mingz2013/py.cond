@@ -18,8 +18,233 @@ class Node(object):
         return None
 
 
+class EndNode(Node):
+    """终结符，叶子节点"""
+
+    def __init__(self, pos, tok, lit):
+        self.pos = pos
+        self.tok = tok
+        self.lit = lit
+
+    def __str__(self):
+        # return self.__class__.__name__ + '(' + str(self.execute()) + ')'
+        return str({
+            "name": self.__class__.__name__,
+            "tok": self.tok,
+            "pos": self.pos,
+            "lit": self.lit
+        })
+
+    def __repr__(self):
+        # return self.__class__.__name__ + '(' + repr(self.execute()) + ')'
+        return repr({
+            "name": self.__class__.__name__,
+            "tok": self.tok,
+            "pos": self.pos,
+            "lit": self.lit
+        })
+
+
+class DigitLiteral(EndNode):
+    """数字字面值"""
+
+    # def execute(self):
+    #     """exe"""
+    #     return int(self.lit)
+
+
+class Integer(DigitLiteral):
+    """整数字面值"""
+
+    def execute(self):
+        """exe"""
+        return int(self.lit)
+
+
+class FloatNumber(DigitLiteral):
+    """小数字面值"""
+
+    def execute(self):
+        """exe"""
+        return float(self.lit)
+
+
+class Ident(EndNode):
+    """标识符"""
+
+    # def __init__(self, pos, tok, lit):
+    #     self.pos = pos
+    #     self.tok = tok
+    #     self.lit = lit
+
+    #     self.expression = None
+    #
+    # def set_assign(self, node):
+    #     """定义，赋值"""
+    #     self.expression = node
+
+    def execute(self):
+        """execute"""
+        # return self.expression.execute()
+        # 从环境变量，符号表管理里面，获取当前标识符所对应的值
+        return env.Symtab.get_var(self.lit).init_data
+
+
+class Atom(Node):
+    """原子"""
+
+
+class ExpressionList(Atom):
+    """表达式列表"""
+
+    def __init__(self):
+        self.expression_list = []
+
+    def append_expression(self, expression):
+        """execute"""
+        self.expression_list.append(expression)
+
+    def __str__(self):
+        # return self.__class__.__name__ + '(' + str(self.left) + ',' + str(self.right) + ')'
+        return str({
+            "name": self.__class__.__name__,
+            "expression_list": self.expression_list
+        })
+
+    def __repr__(self):
+        # return self.__class__.__name__ + '(' + repr(self.left) + ',' + repr(self.right) + ')'
+        return repr({
+            "name": self.__class__.__name__,
+            "expression_list": self.expression_list
+        })
+
+    def execute(self):
+        """execute"""
+        return [expression.execute() for expression in self.expression_list]
+
+
+class ListDisplay(Atom):
+    """列表显示"""
+
+
+class Call(Atom):
+    """调用"""
+
+
+
+
+
 class Expression(Node):
-    """表达式基类"""
+    """表达式"""
+
+
+class UnaryExpression(Expression):
+    """一元运算符"""
+
+
+class BinaryOperationExpression(Expression):
+    """二元运算符"""
+
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
+
+    def __str__(self):
+        # return self.__class__.__name__ + '(' + str(self.left) + ',' + str(self.right) + ')'
+        return str({
+            "name": self.__class__.__name__,
+            "left": self.left,
+            "right": self.right
+        })
+
+    def __repr__(self):
+        # return self.__class__.__name__ + '(' + repr(self.left) + ',' + repr(self.right) + ')'
+        return repr({
+            "name": self.__class__.__name__,
+            "left": self.left,
+            "right": self.right
+        })
+
+
+class RelationalExpression(BinaryOperationExpression):
+    """加减类运算表达式"""
+
+
+class MultiplicativeExpression(BinaryOperationExpression):
+    """乘除类运算表达式"""
+
+
+class ComparisonExpression(Expression):
+    """比较运算表达式"""
+
+
+class EqualExpression(ComparisonExpression):
+    """等于"""
+
+
+class NotEqualExpression(ComparisonExpression):
+    """不等于"""
+
+
+class LessThanExpression(ComparisonExpression):
+    """小于"""
+
+
+class LessThanOrEqualExpression(ComparisonExpression):
+    """小于等于"""
+
+
+class GreaterThanExpression(ComparisonExpression):
+    """大于"""
+
+
+class GreaterThanOrEqualExpression(ComparisonExpression):
+    """大于等于"""
+
+
+class IsExpression(ComparisonExpression):
+    """is表达式"""
+
+
+class InExpression(ComparisonExpression):
+    """in表达式"""
+
+
+class BooleanExpression(Expression):
+    """布尔运算表达式"""
+
+
+class OrExpression(BooleanExpression):
+    """or运算表达式"""
+
+
+class AndExpression(BooleanExpression):
+    """and运算表达式"""
+
+
+class NotExpression(BooleanExpression):
+    """not运算表达式"""
+
+
+class Statement(Node):
+    """语句"""
+
+
+class CompoundStatement(Statement):
+    """复合语句"""
+
+
+class SimpleStatement(Statement):
+    """简单语句"""
+
+
+class AssignmentStatement(SimpleStatement):
+    """赋值语句"""
+
+
+class ExpressionStatement(SimpleStatement):
+    """表达式语句"""
+
 
 
 class File(Node):
@@ -58,84 +283,29 @@ class File(Node):
         return None
 
 
-class EndNode(Node):
-    """终结符，叶子节点"""
-
-    def __init__(self, pos, tok, lit):
-        self.pos = pos
-        self.tok = tok
-        self.lit = lit
-
-    def __str__(self):
-        # return self.__class__.__name__ + '(' + str(self.execute()) + ')'
-        return str({
-            "name": self.__class__.__name__,
-            "tok": self.tok,
-            "pos": self.pos,
-            "lit": self.lit
-        })
-
-    def __repr__(self):
-        # return self.__class__.__name__ + '(' + repr(self.execute()) + ')'
-        return repr({
-            "name": self.__class__.__name__,
-            "tok": self.tok,
-            "pos": self.pos,
-            "lit": self.lit
-        })
-
-
-class Number(EndNode):
-    """number基类"""
-
-    def execute(self):
-        """exe"""
-        return int(self.lit)
-
-
-class Ident(EndNode):
-    """标识符"""
-
-    # def __init__(self, pos, tok, lit):
-    #     self.pos = pos
-    #     self.tok = tok
-    #     self.lit = lit
-
-    #     self.expression = None
-    #
-    # def set_assign(self, node):
-    #     """定义，赋值"""
-    #     self.expression = node
-
-    def execute(self):
-        """execute"""
-        # return self.expression.execute()
-        # 从环境变量，符号表管理里面，获取当前标识符所对应的值
-        return env.Symtab.get_var(self.lit).init_data
-
-
-class BinaryOperator(Node):
-    """二元操作符"""
-
-    def __init__(self, left, right):
-        self.left = left
-        self.right = right
-
-    def __str__(self):
-        # return self.__class__.__name__ + '(' + str(self.left) + ',' + str(self.right) + ')'
-        return str({
-            "name": self.__class__.__name__,
-            "left": self.left,
-            "right": self.right
-        })
-
-    def __repr__(self):
-        # return self.__class__.__name__ + '(' + repr(self.left) + ',' + repr(self.right) + ')'
-        return repr({
-            "name": self.__class__.__name__,
-            "left": self.left,
-            "right": self.right
-        })
+#
+# class BinaryOperator(Node):
+#     """二元操作符"""
+#
+#     def __init__(self, left, right):
+#         self.left = left
+#         self.right = right
+#
+#     def __str__(self):
+#         # return self.__class__.__name__ + '(' + str(self.left) + ',' + str(self.right) + ')'
+#         return str({
+#             "name": self.__class__.__name__,
+#             "left": self.left,
+#             "right": self.right
+#         })
+#
+#     def __repr__(self):
+#         # return self.__class__.__name__ + '(' + repr(self.left) + ',' + repr(self.right) + ')'
+#         return repr({
+#             "name": self.__class__.__name__,
+#             "left": self.left,
+#             "right": self.right
+#         })
 
 
 class Add(BinaryOperator):
@@ -178,57 +348,56 @@ class Assign(BinaryOperator):
         env.Symtab.add_var(self.left.lit, self.right.execute())
         return None
 
+# class Print(Node):
+#     """print node"""
+#
+#     def __init__(self, param_list_node):
+#         self.param_list_node = param_list_node
+#
+#     def __str__(self):
+#         # return self.__class__.__name__ + '(' + str(self.left) + ',' + str(self.right) + ')'
+#         return str({
+#             "name": self.__class__.__name__,
+#             "params": self.param_list_node
+#         })
+#
+#     def __repr__(self):
+#         # return self.__class__.__name__ + '(' + repr(self.left) + ',' + repr(self.right) + ')'
+#         return repr({
+#             "name": self.__class__.__name__,
+#             "params": self.param_list_node
+#         })
+#
+#     def execute(self):
+#         """execute"""
+#         print(">>>", self.param_list_node.execute())
+#         return None
 
-class Print(Node):
-    """print node"""
 
-    def __init__(self, param_list_node):
-        self.param_list_node = param_list_node
-
-    def __str__(self):
-        # return self.__class__.__name__ + '(' + str(self.left) + ',' + str(self.right) + ')'
-        return str({
-            "name": self.__class__.__name__,
-            "params": self.param_list_node
-        })
-
-    def __repr__(self):
-        # return self.__class__.__name__ + '(' + repr(self.left) + ',' + repr(self.right) + ')'
-        return repr({
-            "name": self.__class__.__name__,
-            "params": self.param_list_node
-        })
-
-    def execute(self):
-        """execute"""
-        print(">>>", self.param_list_node.execute())
-        return None
-
-
-class ParamList(Node):
-    """参数列表"""
-
-    def __init__(self):
-        self.param_list = []
-
-    def append_param(self, param):
-        """execute"""
-        self.param_list.append(param)
-
-    def __str__(self):
-        # return self.__class__.__name__ + '(' + str(self.left) + ',' + str(self.right) + ')'
-        return str({
-            "name": self.__class__.__name__,
-            "params": self.param_list
-        })
-
-    def __repr__(self):
-        # return self.__class__.__name__ + '(' + repr(self.left) + ',' + repr(self.right) + ')'
-        return repr({
-            "name": self.__class__.__name__,
-            "params": self.param_list
-        })
-
-    def execute(self):
-        """execute"""
-        return [param.execute() for param in self.param_list]
+# class ParamList(Node):
+#     """参数列表"""
+#
+#     def __init__(self):
+#         self.param_list = []
+#
+#     def append_param(self, param):
+#         """execute"""
+#         self.param_list.append(param)
+#
+#     def __str__(self):
+#         # return self.__class__.__name__ + '(' + str(self.left) + ',' + str(self.right) + ')'
+#         return str({
+#             "name": self.__class__.__name__,
+#             "params": self.param_list
+#         })
+#
+#     def __repr__(self):
+#         # return self.__class__.__name__ + '(' + repr(self.left) + ',' + repr(self.right) + ')'
+#         return repr({
+#             "name": self.__class__.__name__,
+#             "params": self.param_list
+#         })
+#
+#     def execute(self):
+#         """execute"""
+#         return [param.execute() for param in self.param_list]
