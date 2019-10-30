@@ -45,6 +45,10 @@ class EndNode(Node):
         })
 
 
+class StringLiteral(EndNode):
+    """字符串字面值"""
+
+
 class DigitLiteral(EndNode):
     """数字字面值"""
 
@@ -69,7 +73,7 @@ class FloatNumber(DigitLiteral):
         return float(self.lit)
 
 
-class Ident(EndNode):
+class Identifier(EndNode):
     """标识符"""
 
     # def __init__(self, pos, tok, lit):
@@ -131,15 +135,20 @@ class Call(Atom):
     """调用"""
 
 
-
-
-
 class Expression(Node):
     """表达式"""
 
 
 class UnaryExpression(Expression):
     """一元运算符"""
+
+
+class NegativeExpression(UnaryExpression):
+    """负数"""
+
+
+class PositiveExpression(UnaryExpression):
+    """正数"""
 
 
 class BinaryOperationExpression(Expression):
@@ -172,6 +181,42 @@ class RelationalExpression(BinaryOperationExpression):
 
 class MultiplicativeExpression(BinaryOperationExpression):
     """乘除类运算表达式"""
+
+
+class PlusExpression(BinaryOperationExpression):
+    """add"""
+
+    def execute(self):
+        """exe"""
+        return self.left.execute() + self.right.execute()
+
+
+class MinusSignExpression(RelationalExpression):
+    """sub"""
+
+    def execute(self):
+        """exe"""
+        return self.left.execute() - self.right.execute()
+
+
+class StarExpression(RelationalExpression):
+    """mul"""
+
+    def execute(self):
+        """exe"""
+        return self.left.execute() * self.right.execute()
+
+
+class DivideExpression(MultiplicativeExpression):
+    """div"""
+
+    def execute(self):
+        """exe"""
+        return self.left.execute() / self.right.execute()
+
+
+class RemainderExpression(BinaryOperationExpression):
+    """求余"""
 
 
 class ComparisonExpression(Expression):
@@ -230,10 +275,6 @@ class Statement(Node):
     """语句"""
 
 
-class CompoundStatement(Statement):
-    """复合语句"""
-
-
 class SimpleStatement(Statement):
     """简单语句"""
 
@@ -245,6 +286,9 @@ class AssignmentStatement(SimpleStatement):
 class ExpressionStatement(SimpleStatement):
     """表达式语句"""
 
+
+class CompoundStatement(Statement):
+    """复合语句"""
 
 
 class File(Node):
@@ -283,121 +327,10 @@ class File(Node):
         return None
 
 
-#
-# class BinaryOperator(Node):
-#     """二元操作符"""
-#
-#     def __init__(self, left, right):
-#         self.left = left
-#         self.right = right
-#
-#     def __str__(self):
-#         # return self.__class__.__name__ + '(' + str(self.left) + ',' + str(self.right) + ')'
-#         return str({
-#             "name": self.__class__.__name__,
-#             "left": self.left,
-#             "right": self.right
-#         })
-#
-#     def __repr__(self):
-#         # return self.__class__.__name__ + '(' + repr(self.left) + ',' + repr(self.right) + ')'
-#         return repr({
-#             "name": self.__class__.__name__,
-#             "left": self.left,
-#             "right": self.right
-#         })
-
-
-class Add(BinaryOperator):
-    """add"""
-
-    def execute(self):
-        """exe"""
-        return self.left.execute() + self.right.execute()
-
-
-class Sub(BinaryOperator):
-    """sub"""
-
-    def execute(self):
-        """exe"""
-        return self.left.execute() - self.right.execute()
-
-
-class Mul(BinaryOperator):
-    """mul"""
-
-    def execute(self):
-        """exe"""
-        return self.left.execute() * self.right.execute()
-
-
-class Div(BinaryOperator):
-    """div"""
-
-    def execute(self):
-        """exe"""
-        return self.left.execute() / self.right.execute()
-
-
-class Assign(BinaryOperator):
+class AssignExpression(BinaryOperationExpression):
     """赋值="""
 
     def execute(self):
         """execute"""
         env.Symtab.add_var(self.left.lit, self.right.execute())
         return None
-
-# class Print(Node):
-#     """print node"""
-#
-#     def __init__(self, param_list_node):
-#         self.param_list_node = param_list_node
-#
-#     def __str__(self):
-#         # return self.__class__.__name__ + '(' + str(self.left) + ',' + str(self.right) + ')'
-#         return str({
-#             "name": self.__class__.__name__,
-#             "params": self.param_list_node
-#         })
-#
-#     def __repr__(self):
-#         # return self.__class__.__name__ + '(' + repr(self.left) + ',' + repr(self.right) + ')'
-#         return repr({
-#             "name": self.__class__.__name__,
-#             "params": self.param_list_node
-#         })
-#
-#     def execute(self):
-#         """execute"""
-#         print(">>>", self.param_list_node.execute())
-#         return None
-
-
-# class ParamList(Node):
-#     """参数列表"""
-#
-#     def __init__(self):
-#         self.param_list = []
-#
-#     def append_param(self, param):
-#         """execute"""
-#         self.param_list.append(param)
-#
-#     def __str__(self):
-#         # return self.__class__.__name__ + '(' + str(self.left) + ',' + str(self.right) + ')'
-#         return str({
-#             "name": self.__class__.__name__,
-#             "params": self.param_list
-#         })
-#
-#     def __repr__(self):
-#         # return self.__class__.__name__ + '(' + repr(self.left) + ',' + repr(self.right) + ')'
-#         return repr({
-#             "name": self.__class__.__name__,
-#             "params": self.param_list
-#         })
-#
-#     def execute(self):
-#         """execute"""
-#         return [param.execute() for param in self.param_list]
