@@ -64,86 +64,202 @@ class Parser(object):
 
     def statement(self):
         """语句"""
-        if self.tok == token.IDENT:
-            if self.lit == token.KW_PRINT:
-                # print语句
-                node = self.print_statement()
-                return node
-
-        node = self.expression()
+        node = self.compound_statement()
         return node
 
-    def print_statement(self):
-        """print"""
-        self.next_token()
-        self.skip(token.LPAREN)
-        node = self.param_list()
-        self.skip(token.RPAREN)
+    def compound_statement(self):
+        """
+        复合语句
+        :return:
+        """
 
-        return ast.Print(node)
+        compound_statement_node = ast.CompoundStatement()
 
-    def param_list(self):
-        """参数列表"""
+        node = self.simple_statement()
+        compound_statement_node.append_simple_statement(node)
 
-        node = ast.ParamList()
+        if self.tok == token.tk_semicolon:
+            node = self.simple_statement()
+            compound_statement_node.append_simple_statement(node)
 
-        node1 = self.relational_expression()
-        node.append_param(node1)
+        return compound_statement_node
 
-        while self.tok == token.COMMA:
-            self.skip(token.COMMA)
+        # if self.tok == token.IDENT:
+        #     if self.lit == token.KW_PRINT:
+        #         # print语句
+        #         node = self.print_statement()
+        #         return node
+        #
+        # node = self.expression()
+        # return node
 
-            node1 = self.relational_expression()
-            node.append_param(node1)
+    def simple_statement(self):
+        """
+        简单语句
+        :return:
+        """
+        # node = self.expression_statement()
+
+        # if self.tok == token.tk_identifier:
+        #
+        #     node = ast.Identifier(self.pos, self.tok, self.lit)
+        #
+        #     self.next_token()
+        #
+        #     if self.tok == token.tk_assign:
+        #
+        #         self.next_token()
+        #
+        #         node2 = self.expression_statement()
+        #
+        #         return ast.AssignExpression(node, node2)
+        #
+        #     elif self.tok == token.tk_left_parenthesis:
+        #         self.skip(token.tk_left_parenthesis)
+        #         node3 = self.expression_list()
+        #         self.skip(token.tk_right_parenthesis)
+        #         return ast.Call(node, node3)
+        #
+        #     elif self.tok
+        #     else:
+        #         return node
+        #
+        #
+        # else:
+        return self.expression_statement()
+
+    def expression_list(self):
+        """表达式列表"""
+        node = ast.ExpressionList()
+
+        node1 = self.expression_statement()
+        node.append_expression(node1)
+
+        while self.tok == token.tk_comma:
+            self.skip(token.tk_comma)
+
+            node1 = self.expression_statement()
+            node.append_expression(node1)
 
         return node
+
+    def expression_statement(self):
+        """
+        表达式语句
+        :return:
+        """
+        return self.expression()
 
     def expression(self):
-        """表达式"""
-        print("expression....")
-        node = self.assignment_expression()
+        """
+        表达式
+        :return:
+        """
+        return self.boolean_expression()
 
-        print("expression...>", node)
+    def boolean_expression(self):
+        """
+        布尔表达式
+        :return:
+        """
+        return self.or_operation_expression()
+
+    def or_operation_expression(self):
+        """
+        or操作表达式
+        :return:
+        """
+        node = self.and_operation_expresion()
+
+        while self.tok == token.kw_or:
+            node2 = self.and_operation_expresion()
+            node = ast.OrExpression(node, node2)
+
         return node
 
-    def assignment_expression(self):
-        """赋值表达式"""
-        if self.tok == token.IDENT:
+    def and_operation_expresion(self):
+        """
+        and操作表达式
+        :return:
+        """
+        node = self.not_operation_expression()
 
-            node = ast.Ident(self.pos, self.tok, self.lit)
+        while self.tok == token.kw_and:
+            node2 = self.not_operation_expression()
+            node = ast.AndExpression(node, node2)
 
-            self.next_token()
+        return node
 
-            if self.tok == token.ASSIGN:
+    def not_operation_expression(self):
+        """
+        not操作表达式
+        :return:
+        """
+        node = self.comparison_expression()
+        while self.tok == token.kw_not:
+            node2 = self.not_operation_expression()
+            node = ast.NotExpression(node, node2)
 
-                self.next_token()
+        return node
 
-                node2 = self.relational_expression()
+    def comparison_expression(self):
+        """
+        比较运算表达式
+        :return:
+        """
+        node = self.binary_operation_expression()
 
-                return ast.Assign(node, node2)
+        while self.tok in (
+                token.tk_equal,
+                token.tk_not_equal,
+                token.tk_less_than,
+                token.tk_less_than_or_equal,
+                token.tk_greater_than,
+                token.tk_greater_than_or_equal,
+                token.kw_is,
+                token.kw_in,):
+            tok2 = self.tok
+            node2 = self.binary_operation_expression()
+            if tok2 == token.tk_equal:
+                node = ast.EqualExpression(node, node2)
+            elif tok2 == token.tk_not_equal:
+                node = ast.NotEqualExpression(node, node2)
+            elif tok2 == token.tk_less_than:
+                node = ast.LessThanExpression(node, node2)
+            elif tok2 == token.tk_less_than_or_equal:
+                node = ast.LessThanOrEqualExpression(node, node2)
+            elif tok2 == token.kw_is:
+                node = ast.IsExpression(node, node2)
+            elif tok2 == token.kw_in:
+                node = ast.InExpression(node, node2)
 
-            else:
-                self.error("assignment error..")
+        return node
 
-        else:
-            self.error("assignment error")
+    def binary_operation_expression(self):
+        """
+        二元操作运算符
+        :return:
+        """
+        return self.relational_expression()
+
+
 
     def relational_expression(self):
         """加减类表达式"""
         print("relational_expression....")
         node = self.multiplicative_expression()
 
-        while self.tok == token.ADD or self.tok == token.SUB:
+        while self.tok == token.tk_plus or self.tok == token.tk_minus_sign:
 
             tok1 = self.tok
 
             self.next_token()
             node2 = self.multiplicative_expression()
 
-            if tok1 == token.ADD:
-                node = ast.Add(node, node2)
-            elif tok1 == token.SUB:
-                node = ast.Sub(node, node2)
+            if tok1 == token.tk_plus:
+                node = ast.PlusExpression(node, node2)
+            elif tok1 == token.tk_minus_sign:
+                node = ast.MinusSignExpression(node, node2)
             else:
                 Exception("")
 
@@ -155,26 +271,27 @@ class Parser(object):
         print("multiplicative_expression....")
         node = self.unary_expression()
 
-        while self.tok == token.DIV or self.tok == token.MUL:
+        while self.tok == token.tk_divide or self.tok == token.tk_star:
             tok1 = self.tok
 
             self.next_token()
             node2 = self.unary_expression()
 
-            if tok1 == token.DIV:
-                node = ast.Div(node, node2)
-            elif tok1 == token.MUL:
-                node = ast.Mul(node, node2)
+            if tok1 == token.tk_divide:
+                node = ast.DivideExpression(node, node2)
+            elif tok1 == token.tk_star:
+                node = ast.StarExpression(node, node2)
             else:
                 Exception("")
 
         print("multiplicative_expression...>", node)
         return node
 
+
     def unary_expression(self):
         """一元表达式"""
         print("unary_expression....")
-        node = self.primary_expression()
+        node = self.atom()
         # if self.tok == token.ADD or self.tok == token.SUB or self.tok == token.MUL:
         #
         #     tok1 = self.tok
@@ -197,9 +314,9 @@ class Parser(object):
         print("unary_expression...>", node)
         return node
 
-    def primary_expression(self):
-        """初值表达式"""
-        print("primary_expression....", self.tok, self.lit)
+    def atom(self):
+        """原子"""
+        print("atom....", self.tok, self.lit)
         if self.tok == token.NUMBER:
 
             node = ast.Number(self.pos, self.tok, self.lit)
@@ -227,6 +344,67 @@ class Parser(object):
             return node
         else:
             self.error("bad express...")  # 两个符号连续了
+
+    # def print_statement(self):
+    #     """print"""
+    #     self.next_token()
+    #     self.skip(token.LPAREN)
+    #     node = self.param_list()
+    #     self.skip(token.RPAREN)
+    #
+    #     return ast.Print(node)
+
+    # def param_list(self):
+    #     """参数列表"""
+    #
+    #     node = ast.ParamList()
+    #
+    #     node1 = self.relational_expression()
+    #     node.append_param(node1)
+    #
+    #     while self.tok == token.COMMA:
+    #         self.skip(token.COMMA)
+    #
+    #         node1 = self.relational_expression()
+    #         node.append_param(node1)
+    #
+    #     return node
+
+    # def expression(self):
+    #     """表达式"""
+    #     print("expression....")
+    #     node = self.assignment_expression()
+    #
+    #     print("expression...>", node)
+    #     return node
+
+    # def assignment_expression(self):
+    #     """赋值表达式"""
+    #     if self.tok == token.IDENT:
+    #
+    #         node = ast.Ident(self.pos, self.tok, self.lit)
+    #
+    #         self.next_token()
+    #
+    #         if self.tok == token.ASSIGN:
+    #
+    #             self.next_token()
+    #
+    #             node2 = self.relational_expression()
+    #
+    #             return ast.Assign(node, node2)
+    #
+    #         else:
+    #             self.error("assignment error..")
+    #
+    #     else:
+    #         self.error("assignment error")
+
+
+
+
+
+
 
     def skip(self, tok):
         """跳过"""

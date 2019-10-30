@@ -134,6 +134,10 @@ class ListDisplay(Atom):
 class Call(Atom):
     """调用"""
 
+    def __init__(self, identifier, expression_list):
+        self.identifier = identifier
+        self.expression_list = expression_list
+
 
 class Expression(Node):
     """表达式"""
@@ -255,7 +259,7 @@ class InExpression(ComparisonExpression):
     """in表达式"""
 
 
-class BooleanExpression(Expression):
+class BooleanExpression(BinaryOperationExpression):
     """布尔运算表达式"""
 
 
@@ -289,6 +293,26 @@ class ExpressionStatement(SimpleStatement):
 
 class CompoundStatement(Statement):
     """复合语句"""
+
+    def __init__(self):
+        self.simple_statements = []
+
+    def __str__(self):
+        # return self.__class__.__name__ + '(' + str(self.execute()) + ')'
+        return str({
+            "name": self.__class__.__name__,
+            "simple_statements": self.simple_statements
+        })
+
+    def __repr__(self):
+        # return self.__class__.__name__ + '(' + repr(self.execute()) + ')'
+        return repr({
+            "name": self.__class__.__name__,
+            "simple_statements": self.simple_statements
+        })
+
+    def append_simple_statement(self, node):
+        self.simple_statements.append(node)
 
 
 class File(Node):
