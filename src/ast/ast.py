@@ -223,7 +223,7 @@ class RemainderExpression(BinaryOperationExpression):
     """求余"""
 
 
-class ComparisonExpression(Expression):
+class ComparisonExpression(BinaryOperationExpression):
     """比较运算表达式"""
 
 

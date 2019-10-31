@@ -292,24 +292,24 @@ class Parser(object):
         """一元表达式"""
         print("unary_expression....")
         node = self.atom()
-        # if self.tok == token.ADD or self.tok == token.SUB or self.tok == token.MUL:
-        #
-        #     tok1 = self.tok
-        #
-        #     self.next_token()
-        #     ret2 = self.unary_expression()
-        #
-        #     if tok1 == token.ADD:
-        #         ret += ret2
-        #         print(ret - ret2, "+", ret2)
-        #     elif tok1 == token.SUB:
-        #         ret -= ret2
-        #         print(ret + ret2, "-", ret2)
-        #     elif tok1 == token.MUL:
-        #         ret *= ret2
-        #         print(ret / ret2, "*", ret2)
-        #     else:
-        #         self.error()
+        if self.tok == token.ADD or self.tok == token.SUB or self.tok == token.MUL:
+
+            tok1 = self.tok
+
+            self.next_token()
+            ret2 = self.unary_expression()
+
+            if tok1 == token.ADD:
+                ret += ret2
+                print(ret - ret2, "+", ret2)
+            elif tok1 == token.SUB:
+                ret -= ret2
+                print(ret + ret2, "-", ret2)
+            elif tok1 == token.MUL:
+                ret *= ret2
+                print(ret / ret2, "*", ret2)
+            else:
+                self.error()
 
         print("unary_expression...>", node)
         return node
@@ -344,65 +344,6 @@ class Parser(object):
             return node
         else:
             self.error("bad express...")  # 两个符号连续了
-
-    # def print_statement(self):
-    #     """print"""
-    #     self.next_token()
-    #     self.skip(token.LPAREN)
-    #     node = self.param_list()
-    #     self.skip(token.RPAREN)
-    #
-    #     return ast.Print(node)
-
-    # def param_list(self):
-    #     """参数列表"""
-    #
-    #     node = ast.ParamList()
-    #
-    #     node1 = self.relational_expression()
-    #     node.append_param(node1)
-    #
-    #     while self.tok == token.COMMA:
-    #         self.skip(token.COMMA)
-    #
-    #         node1 = self.relational_expression()
-    #         node.append_param(node1)
-    #
-    #     return node
-
-    # def expression(self):
-    #     """表达式"""
-    #     print("expression....")
-    #     node = self.assignment_expression()
-    #
-    #     print("expression...>", node)
-    #     return node
-
-    # def assignment_expression(self):
-    #     """赋值表达式"""
-    #     if self.tok == token.IDENT:
-    #
-    #         node = ast.Ident(self.pos, self.tok, self.lit)
-    #
-    #         self.next_token()
-    #
-    #         if self.tok == token.ASSIGN:
-    #
-    #             self.next_token()
-    #
-    #             node2 = self.relational_expression()
-    #
-    #             return ast.Assign(node, node2)
-    #
-    #         else:
-    #             self.error("assignment error..")
-    #
-    #     else:
-    #         self.error("assignment error")
-
-
-
-
 
 
 
