@@ -29,6 +29,13 @@ class Parser(object):
 
         self.next_token()
 
+    def skip(self, tok):
+        """跳过"""
+        if self.tok == tok:
+            self.next_token()
+        else:
+            self.error("bad skip...", self.tok, tok)  # 非预期
+
     def next_token(self):
         """获取下一个token"""
         print("next_token...")
@@ -126,7 +133,14 @@ class Parser(object):
         #
         #
         # else:
-        return self.expression_statement()
+        node = self.expression_statement()
+
+        if node.tok == token.tk_identifier:
+            if self.tok == token.tk_assign:
+                node2 = self.expression_statement()
+                node = ast.AssignmentStatement(node, node2)
+
+        return node
 
     def expression_list(self):
         """表达式列表"""
@@ -291,25 +305,29 @@ class Parser(object):
     def unary_expression(self):
         """一元表达式"""
         print("unary_expression....")
-        node = self.atom()
-        if self.tok == token.ADD or self.tok == token.SUB or self.tok == token.MUL:
+
+        # node = self.atom()
+        if self.tok == token.tk_plus or self.tok == token.tk_minus_sign:  # + -
 
             tok1 = self.tok
 
             self.next_token()
-            ret2 = self.unary_expression()
+            node = self.unary_expression()
 
-            if tok1 == token.ADD:
-                ret += ret2
-                print(ret - ret2, "+", ret2)
-            elif tok1 == token.SUB:
-                ret -= ret2
-                print(ret + ret2, "-", ret2)
-            elif tok1 == token.MUL:
-                ret *= ret2
-                print(ret / ret2, "*", ret2)
-            else:
-                self.error()
+            # if tok1 == token.ADD:
+            #     ret += ret2
+            #     print(ret - ret2, "+", ret2)
+            # elif tok1 == token.SUB:
+            #     ret -= ret2
+            #     print(ret + ret2, "-", ret2)
+            # elif tok1 == token.MUL:
+            #     ret *= ret2
+            #     print(ret / ret2, "*", ret2)
+            # else:
+            #     self.error()
+            node = ast.UnaryExpression(tok1, node)
+        else:
+            node = self.atom()
 
         print("unary_expression...>", node)
         return node
@@ -317,39 +335,45 @@ class Parser(object):
     def atom(self):
         """原子"""
         print("atom....", self.tok, self.lit)
-        if self.tok == token.NUMBER:
+        # if self.tok == token.NUMBER:
+        #
+        #     node = ast.Number(self.pos, self.tok, self.lit)
+        #
+        #     self.next_token()
+        #     print("primary_expression...>", node)
+        #     return node
+        # elif self.tok == token.IDENT:
+        #
+        #     node = ast.Ident(self.pos, self.tok, self.lit)
+        #
+        #     self.next_token()
+        #
+        #     print("primary_expression...>", node)
+        #     return node
+        #
+        # elif self.tok == token.LPAREN:
+        #     self.next_token()
+        #
+        #     node = self.relational_expression()
+        #
+        #     self.skip(token.RPAREN)
+        #
+        #     print("primary_expression...>", node)
+        #     return node
+        # else:
+        #     self.error("bad express...")  # 两个符号连续了
 
-            node = ast.Number(self.pos, self.tok, self.lit)
-
-            self.next_token()
-            print("primary_expression...>", node)
-            return node
-        elif self.tok == token.IDENT:
-
-            node = ast.Ident(self.pos, self.tok, self.lit)
-
-            self.next_token()
-
-            print("primary_expression...>", node)
-            return node
-
-        elif self.tok == token.LPAREN:
-            self.next_token()
-
-            node = self.relational_expression()
-
-            self.skip(token.RPAREN)
-
-            print("primary_expression...>", node)
-            return node
-        else:
-            self.error("bad express...")  # 两个符号连续了
-
-
-
-    def skip(self, tok):
-        """跳过"""
-        if self.tok == tok:
-            self.next_token()
-        else:
-            self.error("bad skip...", self.tok, tok)  # 非预期
+        if self.tok == token.tk_left_parenthesis:  # (
+            node = self.boolean_expression()
+            self.skip(token.tk_right_parenthesis)
+        elif self.tok == token.tk_left_middle_bracket:
+            # node = self.
+            pass
+        elif self.tok == token.tk_identifier:
+            pass
+        elif self.tok == token.tk_string:
+            pass
+        elif self.tok == token.tk_floatnumber:
+            pass
+        elif self.tok == token.tk_integer:
+            pass

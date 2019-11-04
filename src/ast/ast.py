@@ -8,7 +8,7 @@ __date__ = "16/12/2017"
 __author__ = "zhaojm"
 
 from parser import env
-
+from token import token
 
 class Node(object):
     """节点基类"""
@@ -145,6 +145,19 @@ class Expression(Node):
 
 class UnaryExpression(Expression):
     """一元运算符"""
+
+    def __init__(self, tok, expression):
+        self.tok = tok
+        self.expression = expression
+
+    def execute(self):
+        if self.tok == token.tk_plus:
+            return self.expression.execute()
+        elif self.tok == token.tk_minus_sign:
+            return -self.expression.execute()
+        else:
+            print('UnaryExpression >> error tok', self.tok)
+            return None
 
 
 class NegativeExpression(UnaryExpression):
@@ -286,6 +299,15 @@ class SimpleStatement(Statement):
 class AssignmentStatement(SimpleStatement):
     """赋值语句"""
 
+    def __init__(self, ident, expression):
+        self.ident = ident
+        self.expression = expression
+
+    def execute(self):
+        """execute"""
+        env.Symtab.add_var(self.ident.lit, self.expression.execute())
+        return None
+
 
 class ExpressionStatement(SimpleStatement):
     """表达式语句"""
@@ -350,11 +372,10 @@ class File(Node):
 
         return None
 
-
-class AssignExpression(BinaryOperationExpression):
-    """赋值="""
-
-    def execute(self):
-        """execute"""
-        env.Symtab.add_var(self.left.lit, self.right.execute())
-        return None
+# class AssignExpression(BinaryOperationExpression):
+#     """赋值="""
+#
+#     def execute(self):
+#         """execute"""
+#         env.Symtab.add_var(self.left.lit, self.right.execute())
+#         return None
