@@ -367,13 +367,20 @@ class Parser(object):
             node = self.boolean_expression()
             self.skip(token.tk_right_parenthesis)
         elif self.tok == token.tk_left_middle_bracket:
-            # node = self.
-            pass
+            node = self.expression_list()
+
         elif self.tok == token.tk_identifier:
-            pass
+            node = ast.Identifier(self.pos, self.tok, self.lit)
+            if self.tok == token.tk_left_parenthesis:
+                node2 = self.expression_list()
+                node = ast.Call(node, node2)
+
         elif self.tok == token.tk_string:
-            pass
+            node = ast.StringLiteral(self.pos, self.tok, self.lit)
         elif self.tok == token.tk_floatnumber:
-            pass
+            node = ast.FloatNumber(self.pos, self.tok, self.lit)
         elif self.tok == token.tk_integer:
-            pass
+            node = ast.Integer(self.pos, self.tok, self.lit)
+        else:
+            self.error('unexcept ', self.tok, self.lit, self.tok)
+        return node
