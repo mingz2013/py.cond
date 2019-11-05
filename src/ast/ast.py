@@ -7,7 +7,7 @@ ast相关定义
 __date__ = "16/12/2017"
 __author__ = "zhaojm"
 
-from parser import env
+from env import env
 from token import token
 
 class Node(object):
@@ -307,6 +307,22 @@ class AssignmentStatement(SimpleStatement):
         """execute"""
         env.Symtab.add_var(self.ident.lit, self.expression.execute())
         return None
+
+    def __str__(self):
+        # return self.__class__.__name__ + '(' + str(self.execute()) + ')'
+        return str({
+            "name": self.__class__.__name__,
+            "ident": self.ident,
+            "expression": self.expression
+        })
+
+    def __repr__(self):
+        # return self.__class__.__name__ + '(' + repr(self.execute()) + ')'
+        return repr({
+            "name": self.__class__.__name__,
+            "ident": self.ident,
+            "expression": self.expression
+        })
 
 
 class ExpressionStatement(SimpleStatement):

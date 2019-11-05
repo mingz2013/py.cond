@@ -55,6 +55,7 @@ class Parser(object):
 
     def parse_file(self):
         """parse_file"""
+        print('parse_file.....')
 
         file_node = ast.File()
 
@@ -137,8 +138,10 @@ class Parser(object):
 
         if node.tok == token.tk_identifier:
             if self.tok == token.tk_assign:
+                self.next_token()
                 node2 = self.expression_statement()
                 node = ast.AssignmentStatement(node, node2)
+
 
         return node
 
@@ -326,6 +329,9 @@ class Parser(object):
             # else:
             #     self.error()
             node = ast.UnaryExpression(tok1, node)
+
+
+
         else:
             node = self.atom()
 
@@ -366,21 +372,42 @@ class Parser(object):
         if self.tok == token.tk_left_parenthesis:  # (
             node = self.boolean_expression()
             self.skip(token.tk_right_parenthesis)
+
         elif self.tok == token.tk_left_middle_bracket:
             node = self.expression_list()
 
         elif self.tok == token.tk_identifier:
             node = ast.Identifier(self.pos, self.tok, self.lit)
+
             if self.tok == token.tk_left_parenthesis:
                 node2 = self.expression_list()
                 node = ast.Call(node, node2)
+                self.skip(token.tk_right_parenthesis)
+            self.next_token()
 
         elif self.tok == token.tk_string:
             node = ast.StringLiteral(self.pos, self.tok, self.lit)
+            self.next_token()
+
         elif self.tok == token.tk_floatnumber:
             node = ast.FloatNumber(self.pos, self.tok, self.lit)
+            self.next_token()
+
         elif self.tok == token.tk_integer:
             node = ast.Integer(self.pos, self.tok, self.lit)
+            self.next_token()
+
         else:
             self.error('unexcept ', self.tok, self.lit, self.tok)
+
         return node
+
+
+if __name__ == '__main__':
+    import codecs
+
+    filename = '1.calc'
+    with codecs.open(filename, encoding='utf-8') as f:
+        ast = Parser(filename, f.read()).parse_file()
+        print('ast-->>>', ast)
+        # print(ast.execute())
