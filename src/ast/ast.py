@@ -435,7 +435,7 @@ class PrintStatement(SimpleStatement):
         })
 
     def execute(self):
-        print(">>>", self.expression_list.execute())
+        print("print >>>", self.expression_list.execute())
         return None
 
 class AssignmentStatement(SimpleStatement):
