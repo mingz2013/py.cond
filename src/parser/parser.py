@@ -40,7 +40,7 @@ class Parser(object):
         """获取下一个token"""
         print("next_token...")
         self.pos, self.tok, self.lit = self.scanner.scan()
-        print('--------------------', self.pos, self.tok, self.lit)
+        print('next_token--------------------', self.pos, self.tok, self.lit)
         # if self.tok == token.EOF:
         #     pass
         # else:
@@ -136,7 +136,7 @@ class Parser(object):
         # else:
         node = self.expression_statement()
 
-        if node.tok == token.tk_identifier:
+        if isinstance(node, ast.Identifier):
             if self.tok == token.tk_assign:
                 self.next_token()
                 node2 = self.expression_statement()
@@ -188,7 +188,10 @@ class Parser(object):
         """
         node = self.and_operation_expresion()
 
+        # self.next_token()
+
         while self.tok == token.kw_or:
+            self.skip(token.kw_or)
             node2 = self.and_operation_expresion()
             node = ast.OrExpression(node, node2)
 
@@ -202,6 +205,7 @@ class Parser(object):
         node = self.not_operation_expression()
 
         while self.tok == token.kw_and:
+            self.skip(token.kw_and)
             node2 = self.not_operation_expression()
             node = ast.AndExpression(node, node2)
 
@@ -214,6 +218,7 @@ class Parser(object):
         """
         node = self.comparison_expression()
         while self.tok == token.kw_not:
+            self.skip(token.kw_not)
             node2 = self.not_operation_expression()
             node = ast.NotExpression(node, node2)
 
@@ -236,7 +241,10 @@ class Parser(object):
                 token.kw_is,
                 token.kw_in,):
             tok2 = self.tok
+            self.skip(tok2)
+            print('tok2', tok2)
             node2 = self.binary_operation_expression()
+            print('tok2', tok2)
             if tok2 == token.tk_equal:
                 node = ast.EqualExpression(node, node2)
             elif tok2 == token.tk_not_equal:
@@ -245,10 +253,17 @@ class Parser(object):
                 node = ast.LessThanExpression(node, node2)
             elif tok2 == token.tk_less_than_or_equal:
                 node = ast.LessThanOrEqualExpression(node, node2)
+            elif tok2 == token.tk_greater_than:
+                node = ast.GreaterThanExpression(node, node2)
+            elif tok2 == token.tk_greater_than_or_equal:
+                node = ast.GreaterThanOrEqualExpression(node, node2)
             elif tok2 == token.kw_is:
                 node = ast.IsExpression(node, node2)
             elif tok2 == token.kw_in:
                 node = ast.InExpression(node, node2)
+            else:
+                self.error("comparison_expression unexcept tok", tok2)
+
 
         return node
 
@@ -370,20 +385,28 @@ class Parser(object):
         #     self.error("bad express...")  # 两个符号连续了
 
         if self.tok == token.tk_left_parenthesis:  # (
+            self.skip(token.tk_left_parenthesis)
             node = self.boolean_expression()
+            node = ast.ParenthForm(node)
             self.skip(token.tk_right_parenthesis)
 
         elif self.tok == token.tk_left_middle_bracket:
+            self.skip(token.tk_left_middle_bracket)
             node = self.expression_list()
+            node = ast.ListDisplay(node)
+            self.skip(token.tk_right_middle_bracket)
 
         elif self.tok == token.tk_identifier:
             node = ast.Identifier(self.pos, self.tok, self.lit)
-
+            self.next_token()
             if self.tok == token.tk_left_parenthesis:
+                self.skip(token.tk_left_parenthesis)
                 node2 = self.expression_list()
                 node = ast.Call(node, node2)
                 self.skip(token.tk_right_parenthesis)
-            self.next_token()
+
+
+                # self.next_token()
 
         elif self.tok == token.tk_string:
             node = ast.StringLiteral(self.pos, self.tok, self.lit)

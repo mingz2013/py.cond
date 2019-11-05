@@ -130,6 +130,44 @@ class ExpressionList(Atom):
 class ListDisplay(Atom):
     """列表显示"""
 
+    def __init__(self, expression_list):
+        self.expression_list = expression_list
+
+    def __str__(self):
+        return str({
+            "name": self.__class__.__name__,
+            "expression_list": self.expression_list
+        })
+
+    def __repr__(self):
+        return repr({
+            "name": self.__class__.__name__,
+            "expression_list": self.expression_list
+        })
+
+
+class ParenthForm(Atom):
+    """
+    圆括号形式
+    """
+
+    def __init__(self, expression):
+        self.expression = expression
+
+    def __str__(self):
+        return str({
+            "name": self.__class__.__name__,
+            "expression": self.expression
+        })
+
+    def __repr__(self):
+        return repr({
+            "name": self.__class__.__name__,
+            "expression": self.expression
+        })
+
+
+
 
 class Call(Atom):
     """调用"""
@@ -138,6 +176,19 @@ class Call(Atom):
         self.identifier = identifier
         self.expression_list = expression_list
 
+    def __str__(self):
+        return str({
+            "name": self.__class__.__name__,
+            "identifier": self.identifier,
+            "expression_list": self.expression_list
+        })
+
+    def __repr__(self):
+        return repr({
+            "name": self.__class__.__name__,
+            "identifier": self.identifier,
+            "expression_list": self.expression_list
+        })
 
 class Expression(Node):
     """表达式"""
@@ -158,6 +209,20 @@ class UnaryExpression(Expression):
         else:
             print('UnaryExpression >> error tok', self.tok)
             return None
+
+    def __str__(self):
+        return str({
+            "name": self.__class__.__name__,
+            "tok": self.tok,
+            "expression": self.expression
+        })
+
+    def __repr__(self):
+        return repr({
+            "name": self.__class__.__name__,
+            "tok": self.tok,
+            "expression": self.expression
+        })
 
 
 class NegativeExpression(UnaryExpression):

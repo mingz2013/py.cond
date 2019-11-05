@@ -316,16 +316,19 @@ src->词法分析器，生成token流 -> 语法分析，生成AST -> AST执行 -
 <原子> ::= <标识符> 
             | <字面值> 
             | <列表显示> 
-            | <左小括号><布尔运算表达式><右小括号>
+            | <圆括号形式>
             | 调用
+<圆括号形式> ::= <左小括号><布尔运算表达式><右小括号>
 ```
 
 ```bnf
 <atom> ::= <identifier>
             | <literal>
             | <list_display>
-            | <tk_left_parenthesis><boolean_expression><tk_right_parenthesis>
+            | <parenth_form>
             | <call>
+<parenth_form> ::= <tk_left_parenthesis><boolean_expression><tk_right_parenthesis>
+
 ```
 
 
