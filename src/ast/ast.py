@@ -48,6 +48,9 @@ class EndNode(Node):
 class StringLiteral(EndNode):
     """字符串字面值"""
 
+    def execute(self):
+        return self.lit[1:-1]  # 去掉双引号
+
 
 class DigitLiteral(EndNode):
     """数字字面值"""
