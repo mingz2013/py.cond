@@ -1,10 +1,6 @@
 # -*- coding:utf-8 -*-
 """
-
 语法分析，生成抽象语法树
-
-
-
 """
 __date__ = "14/12/2017"
 __author__ = "zhaojm"
@@ -391,6 +387,7 @@ class Parser(object):
             self.next_token()
 
         else:
+            node = None
             self.error('atom unexcept ', self.tok, self.lit, self.tok)
 
         return node

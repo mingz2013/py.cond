@@ -48,6 +48,7 @@ class StringLiteral(EndNode):
     """字符串字面值"""
 
     def execute(self):
+        """exe"""
         return self.lit[1:-1]  # 去掉双引号
 
 
@@ -131,6 +132,7 @@ class ListDisplay(Atom):
         })
 
     def execute(self):
+        """exe"""
         return self.expression_list.execute()
 
 
@@ -155,6 +157,7 @@ class ParenthForm(Atom):
         })
 
     def execute(self):
+        """exe"""
         return self.expression.execute()
 
 
@@ -180,6 +183,7 @@ class Call(Atom):
         })
 
     def execute(self):
+        """exe"""
         func = self.identifier.execute()
 
         return func(self.expression_list.execute())
@@ -197,6 +201,7 @@ class UnaryExpression(Expression):
         self.expression = expression
 
     def execute(self):
+        """exe"""
         if self.tok == token.tk_plus:
             return self.expression.execute()
         elif self.tok == token.tk_minus_sign:
@@ -250,6 +255,7 @@ class BinaryOperationExpression(Expression):
         })
 
     def execute(self):
+        """exe"""
         raise NotImplemented()
 
 
@@ -297,6 +303,7 @@ class RemainderExpression(BinaryOperationExpression):
     """求余"""
 
     def execute(self):
+        """exe"""
         return self.left.execute() % self.right.execute()
 
 
@@ -308,6 +315,7 @@ class EqualExpression(ComparisonExpression):
     """等于"""
 
     def execute(self):
+        """exe"""
         return self.left.execute() == self.right.execute()
 
 
@@ -315,6 +323,7 @@ class NotEqualExpression(ComparisonExpression):
     """不等于"""
 
     def execute(self):
+        """exe"""
         return self.left.execute() != self.right.execute()
 
 
@@ -322,6 +331,7 @@ class LessThanExpression(ComparisonExpression):
     """小于"""
 
     def execute(self):
+        """exe"""
         return self.left.execute() < self.right.execute()
 
 
@@ -329,6 +339,7 @@ class LessThanOrEqualExpression(ComparisonExpression):
     """小于等于"""
 
     def execute(self):
+        """exe"""
         return self.left.execute() <= self.right.execute()
 
 
@@ -336,6 +347,7 @@ class GreaterThanExpression(ComparisonExpression):
     """大于"""
 
     def execute(self):
+        """exe"""
         return self.left.execute() > self.right.execute()
 
 
@@ -343,6 +355,7 @@ class GreaterThanOrEqualExpression(ComparisonExpression):
     """大于等于"""
 
     def execute(self):
+        """exe"""
         return self.left.execute() >= self.right.execute()
 
 
@@ -350,6 +363,7 @@ class IsExpression(ComparisonExpression):
     """is表达式"""
 
     def execute(self):
+        """exe"""
         return self.left.execute() is self.right.execute()
 
 
@@ -357,6 +371,7 @@ class InExpression(ComparisonExpression):
     """in表达式"""
 
     def execute(self):
+        """exe"""
         return self.left.execute() in self.right.execute()
 
 
@@ -368,6 +383,7 @@ class OrExpression(BooleanExpression):
     """or运算表达式"""
 
     def execute(self):
+        """exe"""
         return self.left.execute() or self.right.execute()
 
 
@@ -375,6 +391,7 @@ class AndExpression(BooleanExpression):
     """and运算表达式"""
 
     def execute(self):
+        """exe"""
         return self.left.execute() and self.right.execute()
 
 
@@ -385,6 +402,7 @@ class NotExpression(Expression):
         self.expression = expression
 
     def execute(self):
+        """exe"""
         return not self.expression.execute()
 
     def __str__(self):
@@ -427,6 +445,7 @@ class PrintStatement(SimpleStatement):
         })
 
     def execute(self):
+        """exe"""
         print("print >>>", self.expression_list.execute())
         return None
 
@@ -481,9 +500,15 @@ class CompoundStatement(Statement):
         })
 
     def append_simple_statement(self, node):
+        """
+        append_simple_statement
+        :param node:
+        :return:
+        """
         self.simple_statements.append(node)
 
     def execute(self):
+        """exe"""
         result = None
         for statement in self.simple_statements:
             result = statement.execute()

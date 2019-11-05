@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
 """
+main
 """
 __date__ = "14/12/2017"
 __author__ = "zhaojm"
@@ -20,13 +21,15 @@ def cond(filename):
         print('result: >>', ast.execute())
 
 
-def printHelp():
+def print_help():
+    """print help"""
     print("cond path")
 
 
 def main():
+    """main"""
     if len(sys.argv) != 2:
-        printHelp()
+        print_help()
     else:
 
         filename = sys.argv[1]
