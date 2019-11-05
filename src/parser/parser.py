@@ -399,7 +399,7 @@ class Parser(object):
 if __name__ == '__main__':
     import codecs
 
-    filename = '1.calc'
+    filename = '1.cond'
     with codecs.open(filename, encoding='utf-8') as f:
         ast = Parser(filename, f.read()).parse_file()
         print('ast-->>>', ast)

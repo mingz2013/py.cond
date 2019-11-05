@@ -291,7 +291,7 @@ cbd = 12
 
     import codecs
 
-    with codecs.open('1.calc', encoding='utf-8') as f:
+    with codecs.open('1.cond', encoding='utf-8') as f:
         src = f.read()
 
     s = Scanner(None, src)

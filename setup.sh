@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-pypy src/calc.py test/0.5.calc
+pypy src/cond.py test/0.5.cond

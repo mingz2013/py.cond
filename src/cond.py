@@ -13,15 +13,15 @@ sys.path.append(os.path.dirname("."))
 from parser.parser import Parser
 
 
-def calc(filename):
-    """calc"""
+def cond(filename):
+    """cond"""
     with codecs.open(filename, encoding='utf-8') as f:
         ast = Parser(filename, f.read()).parse_file()
         print('result: >>', ast.execute())
 
 
 def printHelp():
-    print("calc path")
+    print("cond path")
 
 
 def main():
@@ -31,7 +31,7 @@ def main():
 
         filename = sys.argv[1]
 
-        calc(filename)
+        cond(filename)
 
 
 if __name__ == "__main__":
