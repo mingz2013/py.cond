@@ -85,8 +85,15 @@ class Parser(object):
 
         node = self.simple_statement()
         compound_statement_node.append_simple_statement(node)
+        # self.next_token()
 
-        if self.tok == token.tk_semicolon:
+        while self.tok == token.tk_semicolon:
+
+            self.skip(token.tk_semicolon)
+
+            if self.tok == token.EOF:
+                break
+
             node = self.simple_statement()
             compound_statement_node.append_simple_statement(node)
 
@@ -314,7 +321,7 @@ class Parser(object):
             elif tok1 == token.tk_star:
                 node = ast.StarExpression(node, node2)
             else:
-                Exception("")
+                Exception("multiplicative_expression unexcept tok1 ", tok1)
 
         print("multiplicative_expression...>", node)
         return node
@@ -331,21 +338,7 @@ class Parser(object):
 
             self.next_token()
             node = self.unary_expression()
-
-            # if tok1 == token.ADD:
-            #     ret += ret2
-            #     print(ret - ret2, "+", ret2)
-            # elif tok1 == token.SUB:
-            #     ret -= ret2
-            #     print(ret + ret2, "-", ret2)
-            # elif tok1 == token.MUL:
-            #     ret *= ret2
-            #     print(ret / ret2, "*", ret2)
-            # else:
-            #     self.error()
             node = ast.UnaryExpression(tok1, node)
-
-
 
         else:
             node = self.atom()
@@ -356,33 +349,6 @@ class Parser(object):
     def atom(self):
         """原子"""
         print("atom....", self.tok, self.lit)
-        # if self.tok == token.NUMBER:
-        #
-        #     node = ast.Number(self.pos, self.tok, self.lit)
-        #
-        #     self.next_token()
-        #     print("primary_expression...>", node)
-        #     return node
-        # elif self.tok == token.IDENT:
-        #
-        #     node = ast.Ident(self.pos, self.tok, self.lit)
-        #
-        #     self.next_token()
-        #
-        #     print("primary_expression...>", node)
-        #     return node
-        #
-        # elif self.tok == token.LPAREN:
-        #     self.next_token()
-        #
-        #     node = self.relational_expression()
-        #
-        #     self.skip(token.RPAREN)
-        #
-        #     print("primary_expression...>", node)
-        #     return node
-        # else:
-        #     self.error("bad express...")  # 两个符号连续了
 
         if self.tok == token.tk_left_parenthesis:  # (
             self.skip(token.tk_left_parenthesis)
@@ -420,8 +386,8 @@ class Parser(object):
             node = ast.Integer(self.pos, self.tok, self.lit)
             self.next_token()
 
-        else:
-            self.error('unexcept ', self.tok, self.lit, self.tok)
+        # else:
+        #     self.error('unexcept ', self.tok, self.lit, self.tok)
 
         return node
 
