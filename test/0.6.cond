@@ -1,0 +1,51 @@
+
+
+
+a = 1 + (10 - 5)
+
+b = [1, 2]
+
+
+
+
+c = -1
+
+d = 1 + 2 * 3
+
+e = d > c
+
+
+f = e or d < c and a
+
+c;b;
+
+g = 1.2
+
+h = "123"
+
+h
+
+++-g
+
+
+not not g
+
+
+j = a in b
+
+j
+
+
+
+
+print(j)
+
+a
+
+
+
+
+def a(b):c=b+1;print(c);c;
+
+
+if a:
