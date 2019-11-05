@@ -123,16 +123,31 @@ class Parser(object):
         :return:
         """
         print("simple_statement...")
-        node = self.expression_statement()
 
-        if isinstance(node, ast.Identifier):
-            if self.tok == token.tk_assign:
-                self.skip(token.tk_assign)
-                node2 = self.expression_statement()
-                node = ast.AssignmentStatement(node, node2)
+        if self.tok == token.kw_print:
+            node = self.print_statement()
+        else:
+
+            node = self.expression_statement()
+
+            if isinstance(node, ast.Identifier):
+
+                if self.tok == token.tk_assign:
+                    self.skip(token.tk_assign)
+                    node2 = self.expression_statement()
+                    node = ast.AssignmentStatement(node, node2)
 
         print("simple_statement...>>", node)
         return node
+
+    def print_statement(self):
+        """print"""
+        self.skip(token.kw_print)
+        self.skip(token.tk_left_parenthesis)
+        node = self.expression_list()
+        self.skip(token.tk_right_parenthesis)
+
+        return ast.PrintStatement(node)
 
     def expression_list(self):
         """表达式列表"""

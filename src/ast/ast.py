@@ -414,6 +414,30 @@ class SimpleStatement(Statement):
     """简单语句"""
 
 
+class PrintStatement(SimpleStatement):
+    """print"""
+
+    def __init__(self, expression_list):
+        self.expression_list = expression_list
+
+    def __str__(self):
+        # return self.__class__.__name__ + '(' + str(self.execute()) + ')'
+        return str({
+            "name": self.__class__.__name__,
+            "expression_list": self.expression_list
+        })
+
+    def __repr__(self):
+        # return self.__class__.__name__ + '(' + repr(self.execute()) + ')'
+        return repr({
+            "name": self.__class__.__name__,
+            "expression_list": self.expression_list
+        })
+
+    def execute(self):
+        print(">>>", self.expression_list.execute())
+        return None
+
 class AssignmentStatement(SimpleStatement):
     """赋值语句"""
 

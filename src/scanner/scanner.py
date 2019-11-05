@@ -32,6 +32,7 @@ kw_map = {
     'False': token.kw_false,
     'True': token.kw_true,
     'None': token.kw_none,
+    'print': token.kw_print,
 }
 
 

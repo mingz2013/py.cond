@@ -17,6 +17,8 @@ kw_false = "kw_false"  # False
 kw_true = "kw_true"  # True
 kw_none = "kw_none"  # None
 
+kw_print = "kw_print"  # print
+
 # 标识符
 tk_identifier = "tk_identifier"  # 标识符
 
@@ -53,8 +55,6 @@ tk_quotation_mark = "tk_quotation_mark"  # "'"
 tk_double_quotation_mark = "tk_double_quotation_mark"  # "\""
 
 tk_newline = "tk_newline"  # \n
-
-# KW_PRINT = "print"
 
 ERROR = "ERROR"
 

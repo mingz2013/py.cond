@@ -77,6 +77,7 @@ src->词法分析器，生成token流 -> 语法分析，生成AST -> AST执行 -
 <False关键字> ::= "False"
 <True关键字> ::= "True"
 <None关键字> ::= "None"
+<print关键字> ::= "print"
 ```
 
 ```bnf
@@ -88,6 +89,7 @@ src->词法分析器，生成token流 -> 语法分析，生成AST -> AST执行 -
 <kw_false> ::= "False"
 <kw_true> ::= "True"
 <kw_none> ::= "None"
+<kw_print> ::= "print"
 ```
 
 
@@ -462,14 +464,16 @@ src->词法分析器，生成token流 -> 语法分析，生成AST -> AST执行 -
 ```bnf
 <简单语句> ::= <表达式语句>  
                 |<赋值语句>
+                | <print语句>
 ```
 
 ```bnf
 <simple_statement> ::= <expression_statement>
                     | <assignment_statement>
+                    | <print_statement>
 ```
 
-### 表达式语句
+#### 表达式语句
 ```bnf
 <表达式语句> ::= <表达式>
 ```
@@ -477,7 +481,7 @@ src->词法分析器，生成token流 -> 语法分析，生成AST -> AST执行 -
 <expression_statement> ::= <expression>
 ```
 
-### 赋值语句
+#### 赋值语句
 
 目前，赋值语句，只支持单个的赋值，不支持多个的同时赋值
 
@@ -488,6 +492,14 @@ src->词法分析器，生成token流 -> 语法分析，生成AST -> AST执行 -
 <assignment_statement> ::= <identifier><tk_assign><expression>
 ```
 
+#### print语句
+```bnf
+<print语句> ::= <kw_print><左小括号><表达式列表><右小括号>
+```
+
+```bnf
+<print_statement> ::= <kw_print><tk_left_parenthesis><expression_list><tk_right_parenthesis>
+```
 
 
 ### 复合语句
