@@ -388,4 +388,4 @@ if __name__ == '__main__':
     with codecs.open(filename, encoding='utf-8') as f:
         ast = Parser(filename, f.read()).parse_file()
         print('ast-->>>', ast)
-        # print(ast.execute())
+        print('ast.execute-->>', ast.execute())

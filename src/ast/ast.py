@@ -145,6 +145,9 @@ class ListDisplay(Atom):
             "expression_list": self.expression_list
         })
 
+    def execute(self):
+        return self.expression_list.execute()
+
 
 class ParenthForm(Atom):
     """
@@ -165,6 +168,9 @@ class ParenthForm(Atom):
             "name": self.__class__.__name__,
             "expression": self.expression
         })
+
+    def execute(self):
+        return self.expression.execute()
 
 
 
@@ -189,6 +195,12 @@ class Call(Atom):
             "identifier": self.identifier,
             "expression_list": self.expression_list
         })
+
+    def execute(self):
+        func = self.identifier.execute()
+
+        return func(self.expression_list.execute())
+
 
 class Expression(Node):
     """表达式"""
@@ -256,6 +268,9 @@ class BinaryOperationExpression(Expression):
             "right": self.right
         })
 
+    def execute(self):
+        raise NotImplemented()
+
 
 class RelationalExpression(BinaryOperationExpression):
     """加减类运算表达式"""
@@ -300,6 +315,10 @@ class DivideExpression(MultiplicativeExpression):
 class RemainderExpression(BinaryOperationExpression):
     """求余"""
 
+    def execute(self):
+        return self.left.execute() % self.right.execute()
+
+
 
 class ComparisonExpression(BinaryOperationExpression):
     """比较运算表达式"""
@@ -308,33 +327,59 @@ class ComparisonExpression(BinaryOperationExpression):
 class EqualExpression(ComparisonExpression):
     """等于"""
 
+    def execute(self):
+        return self.left.execute() == self.right.execute()
+
 
 class NotEqualExpression(ComparisonExpression):
     """不等于"""
+
+    def execute(self):
+        return self.left.execute() != self.right.execute()
+
 
 
 class LessThanExpression(ComparisonExpression):
     """小于"""
 
+    def execute(self):
+        return self.left.execute() < self.right.execute()
+
 
 class LessThanOrEqualExpression(ComparisonExpression):
     """小于等于"""
+
+    def execute(self):
+        return self.left.execute() <= self.right.execute()
 
 
 class GreaterThanExpression(ComparisonExpression):
     """大于"""
 
+    def execute(self):
+        return self.left.execute() > self.right.execute()
+
 
 class GreaterThanOrEqualExpression(ComparisonExpression):
     """大于等于"""
+
+    def execute(self):
+        return self.left.execute() >= self.right.execute()
+
 
 
 class IsExpression(ComparisonExpression):
     """is表达式"""
 
+    def execute(self):
+        return self.left.execute() is self.right.execute()
+
 
 class InExpression(ComparisonExpression):
     """in表达式"""
+
+    def execute(self):
+        return self.left.execute() in self.right.execute()
 
 
 class BooleanExpression(BinaryOperationExpression):
@@ -344,13 +389,21 @@ class BooleanExpression(BinaryOperationExpression):
 class OrExpression(BooleanExpression):
     """or运算表达式"""
 
+    def execute(self):
+        return self.left.execute() or self.right.execute()
+
 
 class AndExpression(BooleanExpression):
     """and运算表达式"""
 
+    def execute(self):
+        return self.left.execute() and self.right.execute()
 
-class NotExpression(BooleanExpression):
+
+class NotExpression(Expression):
     """not运算表达式"""
+    # def execute(self):
+    #     return not self.right.execute()
 
 
 class Statement(Node):
@@ -368,10 +421,6 @@ class AssignmentStatement(SimpleStatement):
         self.ident = ident
         self.expression = expression
 
-    def execute(self):
-        """execute"""
-        env.Symtab.add_var(self.ident.lit, self.expression.execute())
-        return None
 
     def __str__(self):
         # return self.__class__.__name__ + '(' + str(self.execute()) + ')'
@@ -388,6 +437,11 @@ class AssignmentStatement(SimpleStatement):
             "ident": self.ident,
             "expression": self.expression
         })
+
+    def execute(self):
+        """execute"""
+        env.Symtab.add_var(self.ident.lit, self.expression.execute())
+        return None
 
 
 class ExpressionStatement(SimpleStatement):
@@ -417,6 +471,14 @@ class CompoundStatement(Statement):
     def append_simple_statement(self, node):
         self.simple_statements.append(node)
 
+    def execute(self):
+        result = None
+        for statement in self.simple_statements:
+            result = statement.execute()
+
+        return result
+
+
 
 class File(Node):
     """root"""
@@ -445,13 +507,13 @@ class File(Node):
     def execute(self):
         """execute"""
         env.Symtab.enter()  # 进入0级作用域
-
+        result = None
         for statement in self.statements:
-            statement.execute()
+            result = statement.execute()
 
         env.Symtab.leave()  # 离开0级作用域
 
-        return None
+        return result
 
 # class AssignExpression(BinaryOperationExpression):
 #     """赋值="""
