@@ -7,7 +7,7 @@ ast相关定义
 __date__ = "16/12/2017"
 __author__ = "zhaojm"
 
-from env import env
+from context import context
 from token import token
 
 
@@ -79,7 +79,7 @@ class Identifier(EndNode):
         """execute"""
         # return self.expression.execute()
         # 从环境变量，符号表管理里面，获取当前标识符所对应的值
-        return env.Symtab.get_var(self.lit).init_data
+        return context.Symtab.get_var(self.lit).init_data
 
 
 class Atom(Node):
@@ -473,7 +473,7 @@ class AssignmentStatement(SimpleStatement):
 
     def execute(self):
         """execute"""
-        env.Symtab.add_var(self.ident.lit, self.expression.execute())
+        context.Symtab.add_var(self.ident.lit, self.expression.execute())
         return None
 
 
@@ -540,11 +540,11 @@ class File(Node):
 
     def execute(self):
         """execute"""
-        env.Symtab.enter()  # 进入0级作用域
+        context.Symtab.enter()  # 进入0级作用域
         result = None
         for statement in self.statements:
             result = statement.execute()
 
-        env.Symtab.leave()  # 离开0级作用域
+        context.Symtab.leave()  # 离开0级作用域
 
         return result
