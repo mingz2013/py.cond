@@ -20,5 +20,19 @@ def calc(filename):
         print(ast.execute())
 
 
+def printHelp():
+    print("calc path")
+
+
+def main():
+    if len(sys.argv) != 2:
+        printHelp()
+    else:
+
+        filename = sys.argv[1]
+
+        calc(filename)
+
+
 if __name__ == "__main__":
-    calc("test/0.4.calc")
+    main()
