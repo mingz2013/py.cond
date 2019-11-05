@@ -15,7 +15,7 @@
     e = d > c
 
 
-    f = e or d < c
+    f = e or d < c and a
 
     c;b;
 
@@ -26,3 +26,15 @@
     h
 
     ++g
+
+
+    not not g
+
+
+    j = a in b
+
+    j
+
+
+
+

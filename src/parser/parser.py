@@ -18,6 +18,7 @@ class Parser(object):
     """
     Parser
     """
+
     def __init__(self, filename, src):
         self.file = token.File(filename)
 
@@ -114,8 +115,6 @@ class Parser(object):
 
         print("compound_statement...>>", node)
         return node
-
-
 
     def simple_statement(self):
         """
@@ -223,11 +222,18 @@ class Parser(object):
         not操作表达式
         :return:
         """
-        node = self.comparison_expression()
-        while self.tok == token.kw_not:
+        if self.tok == token.kw_not:
             self.skip(token.kw_not)
             node2 = self.not_operation_expression()
-            node = ast.NotExpression(node, node2)
+            node = ast.NotExpression(node2)
+        else:
+            node = self.comparison_expression()
+        #
+        # node = self.comparison_expression()
+        # while self.tok == token.kw_not:
+        #     self.skip(token.kw_not)
+        #     node2 = self.not_operation_expression()
+        #     node = ast.NotExpression(node2)
 
         return node
 
@@ -285,8 +291,6 @@ class Parser(object):
         print("binary_operation_expression...>>", node)
         return node
 
-
-
     def relational_expression(self):
         """加减类表达式"""
         print("relational_expression....")
@@ -329,7 +333,6 @@ class Parser(object):
 
         print("multiplicative_expression...>", node)
         return node
-
 
     def unary_expression(self):
         """一元表达式"""
@@ -374,9 +377,6 @@ class Parser(object):
                 node2 = self.expression_list()
                 node = ast.Call(node, node2)
                 self.skip(token.tk_right_parenthesis)
-
-
-                # self.next_token()
 
         elif self.tok == token.tk_string:
             node = ast.StringLiteral(self.pos, self.tok, self.lit)

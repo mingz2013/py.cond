@@ -10,6 +10,7 @@ __author__ = "zhaojm"
 from env import env
 from token import token
 
+
 class Node(object):
     """节点基类"""
 
@@ -27,7 +28,6 @@ class EndNode(Node):
         self.lit = lit
 
     def __str__(self):
-        # return self.__class__.__name__ + '(' + str(self.execute()) + ')'
         return str({
             "name": self.__class__.__name__,
             "tok": self.tok,
@@ -36,7 +36,6 @@ class EndNode(Node):
         })
 
     def __repr__(self):
-        # return self.__class__.__name__ + '(' + repr(self.execute()) + ')'
         return repr({
             "name": self.__class__.__name__,
             "tok": self.tok,
@@ -54,10 +53,6 @@ class StringLiteral(EndNode):
 
 class DigitLiteral(EndNode):
     """数字字面值"""
-
-    # def execute(self):
-    #     """exe"""
-    #     return int(self.lit)
 
 
 class Integer(DigitLiteral):
@@ -78,17 +73,6 @@ class FloatNumber(DigitLiteral):
 
 class Identifier(EndNode):
     """标识符"""
-
-    # def __init__(self, pos, tok, lit):
-    #     self.pos = pos
-    #     self.tok = tok
-    #     self.lit = lit
-
-    #     self.expression = None
-    #
-    # def set_assign(self, node):
-    #     """定义，赋值"""
-    #     self.expression = node
 
     def execute(self):
         """execute"""
@@ -112,14 +96,12 @@ class ExpressionList(Atom):
         self.expression_list.append(expression)
 
     def __str__(self):
-        # return self.__class__.__name__ + '(' + str(self.left) + ',' + str(self.right) + ')'
         return str({
             "name": self.__class__.__name__,
             "expression_list": self.expression_list
         })
 
     def __repr__(self):
-        # return self.__class__.__name__ + '(' + repr(self.left) + ',' + repr(self.right) + ')'
         return repr({
             "name": self.__class__.__name__,
             "expression_list": self.expression_list
@@ -174,8 +156,6 @@ class ParenthForm(Atom):
 
     def execute(self):
         return self.expression.execute()
-
-
 
 
 class Call(Atom):
@@ -256,7 +236,6 @@ class BinaryOperationExpression(Expression):
         self.right = right
 
     def __str__(self):
-        # return self.__class__.__name__ + '(' + str(self.left) + ',' + str(self.right) + ')'
         return str({
             "name": self.__class__.__name__,
             "left": self.left,
@@ -264,7 +243,6 @@ class BinaryOperationExpression(Expression):
         })
 
     def __repr__(self):
-        # return self.__class__.__name__ + '(' + repr(self.left) + ',' + repr(self.right) + ')'
         return repr({
             "name": self.__class__.__name__,
             "left": self.left,
@@ -322,7 +300,6 @@ class RemainderExpression(BinaryOperationExpression):
         return self.left.execute() % self.right.execute()
 
 
-
 class ComparisonExpression(BinaryOperationExpression):
     """比较运算表达式"""
 
@@ -339,7 +316,6 @@ class NotEqualExpression(ComparisonExpression):
 
     def execute(self):
         return self.left.execute() != self.right.execute()
-
 
 
 class LessThanExpression(ComparisonExpression):
@@ -368,7 +344,6 @@ class GreaterThanOrEqualExpression(ComparisonExpression):
 
     def execute(self):
         return self.left.execute() >= self.right.execute()
-
 
 
 class IsExpression(ComparisonExpression):
@@ -405,8 +380,24 @@ class AndExpression(BooleanExpression):
 
 class NotExpression(Expression):
     """not运算表达式"""
-    # def execute(self):
-    #     return not self.right.execute()
+
+    def __init__(self, expression):
+        self.expression = expression
+
+    def execute(self):
+        return not self.expression.execute()
+
+    def __str__(self):
+        return str({
+            "name": self.__class__.__name__,
+            "expression": self.expression
+        })
+
+    def __repr__(self):
+        return repr({
+            "name": self.__class__.__name__,
+            "expression": self.expression
+        })
 
 
 class Statement(Node):
@@ -424,14 +415,12 @@ class PrintStatement(SimpleStatement):
         self.expression_list = expression_list
 
     def __str__(self):
-        # return self.__class__.__name__ + '(' + str(self.execute()) + ')'
         return str({
             "name": self.__class__.__name__,
             "expression_list": self.expression_list
         })
 
     def __repr__(self):
-        # return self.__class__.__name__ + '(' + repr(self.execute()) + ')'
         return repr({
             "name": self.__class__.__name__,
             "expression_list": self.expression_list
@@ -441,6 +430,7 @@ class PrintStatement(SimpleStatement):
         print("print >>>", self.expression_list.execute())
         return None
 
+
 class AssignmentStatement(SimpleStatement):
     """赋值语句"""
 
@@ -448,9 +438,7 @@ class AssignmentStatement(SimpleStatement):
         self.ident = ident
         self.expression = expression
 
-
     def __str__(self):
-        # return self.__class__.__name__ + '(' + str(self.execute()) + ')'
         return str({
             "name": self.__class__.__name__,
             "ident": self.ident,
@@ -458,7 +446,6 @@ class AssignmentStatement(SimpleStatement):
         })
 
     def __repr__(self):
-        # return self.__class__.__name__ + '(' + repr(self.execute()) + ')'
         return repr({
             "name": self.__class__.__name__,
             "ident": self.ident,
@@ -482,14 +469,12 @@ class CompoundStatement(Statement):
         self.simple_statements = []
 
     def __str__(self):
-        # return self.__class__.__name__ + '(' + str(self.execute()) + ')'
         return str({
             "name": self.__class__.__name__,
             "simple_statements": self.simple_statements
         })
 
     def __repr__(self):
-        # return self.__class__.__name__ + '(' + repr(self.execute()) + ')'
         return repr({
             "name": self.__class__.__name__,
             "simple_statements": self.simple_statements
@@ -506,7 +491,6 @@ class CompoundStatement(Statement):
         return result
 
 
-
 class File(Node):
     """root"""
 
@@ -514,14 +498,12 @@ class File(Node):
         self.statements = []  # 语句集合
 
     def __str__(self):
-        # return self.__class__.__name__ + '(' + str(self.execute()) + ')'
         return str({
             "name": self.__class__.__name__,
             "statements": self.statements
         })
 
     def __repr__(self):
-        # return self.__class__.__name__ + '(' + repr(self.execute()) + ')'
         return repr({
             "name": self.__class__.__name__,
             "statements": self.statements
@@ -541,11 +523,3 @@ class File(Node):
         env.Symtab.leave()  # 离开0级作用域
 
         return result
-
-# class AssignExpression(BinaryOperationExpression):
-#     """赋值="""
-#
-#     def execute(self):
-#         """execute"""
-#         env.Symtab.add_var(self.left.lit, self.right.execute())
-#         return None
