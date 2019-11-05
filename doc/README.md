@@ -266,8 +266,18 @@ src->词法分析器，生成token流 -> 语法分析，生成AST -> AST执行 -
 <tk_comma> ::= ","
 <tk_quotation_mark> ::= "'"
 <tk_double_quotation_mark> ::= "\""
-
 ```
+
+### 空白符
+
+```bnf
+<新的一行> ::= "\n"
+```
+
+```bnf
+<tk_newline> ::= "\n"
+```
+
 
 
 ## 表达式
@@ -507,11 +517,11 @@ src->词法分析器，生成token流 -> 语法分析，生成AST -> AST执行 -
 ## 最高层级组件
 
 ```bnf
-<文件> ::= {<语句>}
+<文件> ::= {{<新的一行>}<语句>{<新的一行>}}
 ```
 
 ```bnf
-<file> ::= {<statement>}
+<file> ::= {{<tk_newline>}<statement>{<tk_newline>}}
 ```
 
 

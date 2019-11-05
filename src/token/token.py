@@ -52,6 +52,8 @@ tk_comma = "tk_comma"  # ","
 tk_quotation_mark = "tk_quotation_mark"  # "'"
 tk_double_quotation_mark = "tk_double_quotation_mark"  # "\""
 
+tk_newline = "tk_newline"  # \n
+
 # KW_PRINT = "print"
 
 ERROR = "ERROR"

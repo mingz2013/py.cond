@@ -70,7 +70,7 @@ class Scanner(object):
         :return:
         """
         # self.next_ch()
-        while self.ch in (' ', '\t', '\n', '\r'):
+        while self.ch in (' ', '\t',):
             self.next_ch()
 
     def scan_identifier(self):
@@ -221,6 +221,8 @@ class Scanner(object):
             #     tok = token.tk_quotation_mark
             # elif ch == '"':
             #     tok = token.tk_double_quotation_mark
+            elif ch == '\n':
+                tok = token.tk_newline
             else:
                 tok = token.ERROR
                 self.error("Unknown lit", lit)
